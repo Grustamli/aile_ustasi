@@ -69,7 +69,9 @@ public class OperatorManager {
     }
 
     public static Operator getRow(String username) throws SQLException {
-        String sql = "SELECT * FROM operators WHERE username = ?";
+        String sql = "SELECT * FROM operators JOIN users\n" +
+                "ON operators.user_id = users.id\n" +
+                "WHERE username = ?";
         Operator operator = null;
         ResultSet rs = null;
         try(

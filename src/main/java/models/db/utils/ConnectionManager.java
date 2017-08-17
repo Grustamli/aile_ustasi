@@ -10,6 +10,8 @@ public class ConnectionManager {
     private String dbUrl;
     private Connection conn = null;
     private static ConnectionManager instance = null;
+    private ConnectionStatus status;
+    private static final String authErrorCode = "28P01";
 
     private ConnectionManager(){}
 
@@ -37,6 +39,12 @@ public class ConnectionManager {
             return true;
         }
         catch (SQLException e){
+            if(e.getSQLState().equals(authErrorCode)){
+                setConnectionStatus(ConnectionStatus.AUTH_ERROR);
+            }
+            else{
+                setConnectionStatus(ConnectionStatus.SERVER_ERROR);
+            }
             return false;
         }
     }
@@ -67,4 +75,11 @@ public class ConnectionManager {
     }
 
 
+    private void setConnectionStatus(ConnectionStatus status){
+        this.status = status;
+    }
+
+    public ConnectionStatus getStatus() {
+        return status;
+    }
 }

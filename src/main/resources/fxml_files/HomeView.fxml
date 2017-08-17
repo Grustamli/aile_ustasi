@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.materialdesignicons.MaterialDesignIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -160,6 +161,21 @@
                      <VBox.margin>
                         <Insets top="25.0" />
                      </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="55.0" prefWidth="210.0">
+                     <children>
+                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" style="-fx-background-radius: 0; -fx-background-color: white;" text="Giriş">
+                           <graphic>
+                              <MaterialDesignIconView glyphName="LOGIN" size="14" />
+                           </graphic>
+                        </Button>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets left="15.0" right="15.0" />
+                     </padding>
                   </HBox>
                </children>
             </VBox>

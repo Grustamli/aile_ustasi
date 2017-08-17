@@ -10,6 +10,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,24 +29,24 @@ public class test {
         System.out.println(FilterManager.combine(filters));
 
         ConnectionManager.getInstance().setDb("localhost", 5432, "postgres");
-        ConnectionManager.getInstance().setCredentials("postgres", "Az2104025");
-        System.out.println(ConnectionManager.getInstance().getConnection());
+        ConnectionManager.getInstance().setCredentials("snoop", "snoop123");
+        Connection conn = ConnectionManager.getInstance().getConnection();
 
-        List<Service> services = ServiceManager.getAll();
-        if(services == null) {
-            System.out.println("is null");
-        }
-
-
-
-        for(Service service : ServiceManager.getAll()){
-            System.out.println(service.getName());
-        }
-
-        String text = "hey";
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(text.getBytes(StandardCharsets.UTF_8));
-        System.out.println(String.valueOf(hash));
-        System.out.println(DigestUtils.sha256Hex(text));
+//        List<Service> services = ServiceManager.getAll();
+//        if(services == null) {
+//            System.out.println("is null");
+//        }
+//
+//
+//
+//        for(Service service : ServiceManager.getAll()){
+//            System.out.println(service.getName());
+//        }
+//
+//        String text = "hey";
+//        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+//        byte[] hash = digest.digest(text.getBytes(StandardCharsets.UTF_8));
+//        System.out.println(String.valueOf(hash));
+//        System.out.println(DigestUtils.sha256Hex(text));
     }
 }

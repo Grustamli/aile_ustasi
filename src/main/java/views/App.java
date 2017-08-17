@@ -4,6 +4,7 @@ import controllers.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.db.utils.ConnectionManager;
@@ -52,5 +53,12 @@ public class App extends Application {
             e.printStackTrace();
         }
     }
+
+
+    public void showAlert(Alert.AlertType alertType, String message){
+        Alert alert = new Alert(alertType, message);
+        alert.showAndWait();
+    }
+
 
 }

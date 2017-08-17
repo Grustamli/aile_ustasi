@@ -1,4 +1,4 @@
-package models.misc;
+package models.db.utils;
 
 public class Account {
     private static  Account instance = null;

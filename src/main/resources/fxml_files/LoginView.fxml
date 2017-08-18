@@ -42,7 +42,7 @@
             <ButtonBar prefHeight="45.0" prefWidth="200.0" BorderPane.alignment="CENTER">
               <buttons>
                 <Button fx:id="okButton" mnemonicParsing="false" onAction="#handleOkButtonClicked" style="-fx-background-radius: 0;" text="OK" />
-                  <Button fx:id="cancelButton" layoutX="235.0" layoutY="18.0" mnemonicParsing="false" onAction="#handleCancelButton" style="-fx-background-radius: 0;" text="Cancel" />
+                  <Button fx:id="cancelButton" layoutX="235.0" layoutY="18.0" mnemonicParsing="false" onAction="#handleCancelButtonClicked" style="-fx-background-radius: 0;" text="Cancel" />
               </buttons>
                <BorderPane.margin>
                   <Insets />

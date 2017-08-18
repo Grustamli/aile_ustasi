@@ -28,6 +28,11 @@ public class HomeViewController extends Controller{
     @FXML
     private TextField searchField;
 
+    @FXML
+    private Button loginButton;
+
+
+
 
     @FXML
     private ComboBox<String> operatorComboBox;
@@ -46,6 +51,13 @@ public class HomeViewController extends Controller{
     private void handleNewOrderClicked(){
         appInstance.showNewOrderStage();
     }
+
+
+    @FXML
+    private void handleOnLoginClicked(){
+        appInstance.showLoginStage();
+    }
+
 
 
     @Override

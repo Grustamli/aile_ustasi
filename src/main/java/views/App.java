@@ -54,6 +54,25 @@ public class App extends Application {
         }
     }
 
+    public void showLoginStage(){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml_files/LoginView.fxml"));
+        try {
+            AnchorPane pane = (AnchorPane) loader.load();
+            Controller controller = loader.getController();
+            controller.setAppInstance(this);
+            controller.init();
+            Scene scene = new Scene(pane);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("Daxil olun");
+            stage.initOwner(primaryStage);
+            stage.showAndWait();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
 
     public void showAlert(Alert.AlertType alertType, String message){
         Alert alert = new Alert(alertType, message);

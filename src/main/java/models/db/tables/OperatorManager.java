@@ -26,7 +26,7 @@ public class OperatorManager {
                 operator.setFirstname(rs.getString("firstname"));
                 operator.setLastname(rs.getString("lastname"));
                 operator.setContactNo(rs.getString("contact_no"));
-                operator.setIdentificationNo(rs.getInt("identification_no"));
+                operator.setIdentificationNo(rs.getString("identification_no"));
                 operators.add(operator);
             }
         }
@@ -54,7 +54,7 @@ public class OperatorManager {
                 operator.setFirstname(rs.getString("firstname"));
                 operator.setLastname(rs.getString("lastname"));
                 operator.setContactNo(rs.getString("contact_no"));
-                operator.setIdentificationNo(rs.getInt("identification_no"));
+                operator.setIdentificationNo(rs.getString("identification_no"));
 
             }
         }
@@ -87,10 +87,11 @@ public class OperatorManager {
                 operator.setFirstname(rs.getString("firstname"));
                 operator.setLastname(rs.getString("lastname"));
                 operator.setContactNo(rs.getString("contact_no"));
-                operator.setIdentificationNo(rs.getInt("identification_no"));
+                operator.setIdentificationNo(rs.getString("identification_no"));
             }
         }
         catch (SQLException e){
+            System.out.println(e.getMessage());
         }
         finally {
             if(rs != null){
@@ -115,7 +116,7 @@ public class OperatorManager {
             stmt.setString(2, bean.getFirstname());
             stmt.setString(3, bean.getLastname());
             stmt.setString(4, bean.getContactNo());
-            stmt.setInt(5, bean.getIdentificationNo());
+            stmt.setString(5, bean.getIdentificationNo());
             int affected = stmt.executeUpdate();
 
             if(affected == 1){

@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 import models.db.beans.Operator;
 import models.db.tables.OperatorManager;
 import models.db.utils.Account;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 
 
 public class LoginViewController extends Controller{
+    private Stage stage = null;
 
     @Override
     public void init() {
@@ -57,11 +59,11 @@ public class LoginViewController extends Controller{
         else{
             try {
                 Operator operator = OperatorManager.getRow(username);
-                System.out.println(operator.getId());
                 Account.getInstance().setUserId(operator.getId());
                 Account.getInstance().setFirstname(operator.getFirstname());
                 Account.getInstance().setLastname(operator.getLastname());
                 Account.getInstance().setUsername(operator.getUsername());
+                appInstance.closeLoginStage();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -70,6 +72,6 @@ public class LoginViewController extends Controller{
 
     @FXML
     private void handleCancelButtonClicked(){
-
+        appInstance.closeLoginStage();
     }
 }

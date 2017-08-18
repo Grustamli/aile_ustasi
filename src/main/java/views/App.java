@@ -13,10 +13,10 @@ import java.io.IOException;
 
 public class App extends Application {
     private Stage primaryStage;
+    private Stage loginStage;
 
     public void start(Stage primaryStage) throws Exception {
-        ConnectionManager.getInstance().setDb("localhost", 5432, "postgres");
-        ConnectionManager.getInstance().setCredentials("postgres", "Az2104025");
+        ConnectionManager.getInstance().setDb("localhost", 5432, "aile_ustasi_db");
         this.primaryStage = primaryStage;
         initHomeView();
 
@@ -36,15 +36,16 @@ public class App extends Application {
         }
     }
 
-    public void showNewOrderStage(){
+    public Stage showNewOrderStage(){
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml_files/NewOrderView.fxml"));
+        Stage stage = null;
         try{
             AnchorPane pane = (AnchorPane) loader.load();
             Controller controller = loader.getController();
             controller.setAppInstance(this);
             controller.init();
             Scene scene = new Scene(pane);
-            Stage stage = new Stage();
+            stage = new Stage();
             stage.setScene(scene);
             stage.setTitle("YENİ SİFARİŞ");
             stage.initOwner(primaryStage);
@@ -52,6 +53,7 @@ public class App extends Application {
         }catch (IOException e){
             e.printStackTrace();
         }
+        return stage;
     }
 
     public void showLoginStage(){
@@ -62,15 +64,19 @@ public class App extends Application {
             controller.setAppInstance(this);
             controller.init();
             Scene scene = new Scene(pane);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle("Daxil olun");
-            stage.initOwner(primaryStage);
-            stage.showAndWait();
+            loginStage = new Stage();
+            loginStage.setScene(scene);
+            loginStage.setTitle("Daxil olun");
+            loginStage.initOwner(primaryStage);
+            loginStage.showAndWait();
         }
         catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public void closeLoginStage(){
+        loginStage.close();
     }
 
 
@@ -78,6 +84,9 @@ public class App extends Application {
         Alert alert = new Alert(alertType, message);
         alert.showAndWait();
     }
+
+
+
 
 
 }

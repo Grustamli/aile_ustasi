@@ -5,14 +5,14 @@ public class Operator {
     private String username;
     private String firstname;
     private String lastname;
-    private int identificationNo;
+    private String identificationNo;
     private String contactNo;
 
-    public int getIdentificationNo() {
+    public String getIdentificationNo() {
         return identificationNo;
     }
 
-    public void setIdentificationNo(int identificationNo) {
+    public void setIdentificationNo(String identificationNo) {
         this.identificationNo = identificationNo;
     }
 

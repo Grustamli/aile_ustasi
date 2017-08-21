@@ -49,6 +49,7 @@ public class App extends Application {
             stage.setScene(scene);
             stage.setTitle("YENİ SİFARİŞ");
             stage.initOwner(primaryStage);
+            stage.setResizable(false);
             stage.showAndWait();
         }catch (IOException e){
             e.printStackTrace();

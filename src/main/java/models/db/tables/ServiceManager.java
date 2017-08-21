@@ -33,6 +33,7 @@ public class ServiceManager {
             }
         }
         catch (SQLException e){
+                    System.out.println(e.getMessage());
         }
         return services;
     }

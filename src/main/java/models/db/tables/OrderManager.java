@@ -45,8 +45,8 @@ public class OrderManager {
 
     public static boolean insert(Order order) throws SQLException {
         boolean inserted = false;
-        String sql = "INSERT INTO orders(firstname, lastname, contact_no, address, status, operator_id, service_id, note)" +
-                "VALUES(?,?,?,?,?::status,?,?,?)";
+        String sql = "INSERT INTO orders(firstname, lastname, contact_no, address, operator_id, service_id, note)" +
+                "VALUES(?,?,?,?,?,?,?)";
         ResultSet keys = null;
         try(
                 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -55,10 +55,9 @@ public class OrderManager {
             stmt.setString(2, order.getLastname());
             stmt.setString(3, order.getContactNo());
             stmt.setString(4, order.getAddress());
-            stmt.setString(5, order.getStatus());
-            stmt.setInt(6, order.getOperatorId());
-            stmt.setInt(7, order.getServiceId());
-            stmt.setString(8, order.getNote());
+            stmt.setInt(5, order.getOperatorId());
+            stmt.setInt(6, order.getServiceId());
+            stmt.setString(7, order.getNote());
 
             int affected = stmt.executeUpdate();
             if(affected == 1){

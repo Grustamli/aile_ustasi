@@ -9,6 +9,7 @@ import models.db.beans.Order;
 import models.db.beans.Service;
 import models.db.tables.OrderManager;
 import models.db.tables.ServiceManager;
+import models.db.utils.Account;
 
 
 import java.sql.SQLException;
@@ -54,7 +55,7 @@ public class NewOrderViewController extends Controller{
 
     @FXML
     private void handleCreateButtonClicked(){
-        final String status = "pending";
+
         String fName = firstnameField.getText();
         String lName = lastNameField.getText();
         String contactNo = contactNoField.getText();
@@ -69,7 +70,7 @@ public class NewOrderViewController extends Controller{
         order.setAddress(address);
         order.setNote(notes);
         order.setServiceId(serviceId);
-        order.setStatus(status);
+        order.setOperatorId(Account.getInstance().getUserId());
 
         try {
             OrderManager.insert(order);

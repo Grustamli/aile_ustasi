@@ -6,9 +6,16 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import models.db.beans.Order;
+import models.db.utils.ConnectionManager;
+
+import java.sql.Connection;
 
 
 public class HomeViewController extends Controller{
+
+    @FXML
+    private void initialize(){
+    }
 
     @FXML
     private TableView<Order> orderTable;
@@ -49,7 +56,13 @@ public class HomeViewController extends Controller{
 
     @FXML
     private void handleNewOrderClicked(){
-        appInstance.showNewOrderStage();
+        Connection connection = ConnectionManager.getInstance().getConnection();
+        if(connection == null){
+            appInstance.showLoginStage();
+        }
+        else{
+            appInstance.showNewOrderStage();
+        }
     }
 
 
@@ -69,4 +82,6 @@ public class HomeViewController extends Controller{
     public void update() {
 
     }
+
+
 }

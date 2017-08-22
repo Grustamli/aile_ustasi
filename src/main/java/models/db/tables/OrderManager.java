@@ -11,11 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderManager {
-    private static  Connection conn = ConnectionManager.getInstance().getConnection();
+    private static  Connection conn;
 
     private OrderManager(){}
 
     public static List<Order> getAll(){
+        conn = ConnectionManager.getInstance().getConnection();
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT * FROM orders";
         try(
@@ -33,6 +34,7 @@ public class OrderManager {
                 order.setOperatorId(rs.getInt("operator_id"));
                 order.setServiceId(rs.getInt("service_id"));
                 order.setOrderTime(rs.getTimestamp("order_time"));
+                order.setStatus(rs.getString("status"));
                 order.setNote(rs.getString("note"));
                 orders.add(order);
             }
@@ -44,6 +46,7 @@ public class OrderManager {
     }
 
     public static boolean insert(Order order) throws SQLException {
+        conn = ConnectionManager.getInstance().getConnection();
         boolean inserted = false;
         String sql = "INSERT INTO orders(firstname, lastname, contact_no, address, operator_id, service_id, note)" +
                 "VALUES(?,?,?,?,?,?,?)";
@@ -78,7 +81,8 @@ public class OrderManager {
     }
 
     public static Order getRow(int id) throws SQLException {
-        String sql = "SELECT * FROM operators WHERE id = ?";
+        conn = ConnectionManager.getInstance().getConnection();
+        String sql = "SELECT * FROM orders WHERE id = ?";
         ResultSet rs = null;
         Order order = null;
         try (
@@ -97,6 +101,7 @@ public class OrderManager {
                 order.setOperatorId(rs.getInt("operator_id"));
                 order.setServiceId(rs.getInt("service_id"));
                 order.setOrderTime(rs.getTimestamp("order_time"));
+                order.setStatus(rs.getString("status"));
                 order.setNote(rs.getString("note"));
             }
         }
@@ -110,6 +115,7 @@ public class OrderManager {
     }
 
     public static boolean delete(int id) {
+        conn = ConnectionManager.getInstance().getConnection();
         boolean deleted = false;
         String sql = "DELETE FROM orders WHERE id = ?";
         try(
@@ -126,6 +132,7 @@ public class OrderManager {
     }
 
     public static boolean update(Order bean) throws SQLException{
+        conn = ConnectionManager.getInstance().getConnection();
         boolean updated = false;
         String sql = "SELECT * FROM orders WHERE id = ?";
         ResultSet rs = null;
@@ -158,6 +165,7 @@ public class OrderManager {
     }
 
     public static List<Order> filter(String filter) throws SQLException {
+        conn = ConnectionManager.getInstance().getConnection();
         String sql = "SELECT * FROM orders WHERE ?";
         ResultSet rs = null;
         List<Order> orders = null;
@@ -178,6 +186,7 @@ public class OrderManager {
                     order.setContactNo(rs.getString("contact_no"));
                     order.setOperatorId(rs.getInt("operator_id"));
                     order.setServiceId(rs.getInt("service_id"));
+                    order.setStatus(rs.getString("status"));
                     order.setOrderTime(rs.getTimestamp("order_time"));
                     order.setNote(rs.getString("note"));
                 }

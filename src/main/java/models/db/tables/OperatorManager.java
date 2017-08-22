@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OperatorManager {
-    private static Connection conn = ConnectionManager.getInstance().getConnection();
-
+    private static Connection conn;
 
     public static List<Operator> getAll(){
+        conn = ConnectionManager.getInstance().getConnection();
         List<Operator> operators = new ArrayList<>();
         String sql = "SELECT * FROM operators";
         try(
@@ -38,6 +38,7 @@ public class OperatorManager {
 
 
     public static Operator getRow(int id) throws SQLException {
+        conn = ConnectionManager.getInstance().getConnection();
         String sql = "SELECT * FROM operators WHERE id = ?";
         Operator operator = null;
         ResultSet rs = null;
@@ -69,6 +70,7 @@ public class OperatorManager {
     }
 
     public static Operator getRow(String username) throws SQLException {
+        conn = ConnectionManager.getInstance().getConnection();
         String sql = "SELECT * FROM operators JOIN users\n" +
                 "ON operators.user_id = users.id\n" +
                 "WHERE username = ?";
@@ -105,6 +107,7 @@ public class OperatorManager {
 
 
     public static boolean insert(Operator bean) throws SQLException {
+        conn = ConnectionManager.getInstance().getConnection();
         String sql = "INSERT INTO operators(username, firstname, lastname, contact_no, identification_no) VALUES(?,?,?,?,?)";
         boolean ret = false;
         ResultSet keys = null;

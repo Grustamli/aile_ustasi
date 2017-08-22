@@ -64,6 +64,7 @@ public class LoginViewController extends Controller{
                 Account.getInstance().setLastname(operator.getLastname());
                 Account.getInstance().setUsername(operator.getUsername());
                 appInstance.closeLoginStage();
+                ControllerStore.getInstance().get(ControllerName.HOME_VIEW).update();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

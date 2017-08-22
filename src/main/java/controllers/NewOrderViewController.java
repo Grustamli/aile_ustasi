@@ -10,6 +10,7 @@ import models.db.beans.Service;
 import models.db.tables.OrderManager;
 import models.db.tables.ServiceManager;
 import models.db.utils.Account;
+import models.db.utils.ConnectionManager;
 
 
 import java.sql.SQLException;
@@ -74,6 +75,7 @@ public class NewOrderViewController extends Controller{
 
         try {
             OrderManager.insert(order);
+            ControllerStore.getInstance().get(ControllerName.HOME_VIEW).update();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());

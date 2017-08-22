@@ -23,7 +23,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HomeViewController">
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HomeViewController">
    <children>
       <BorderPane layoutX="259.0" layoutY="209.0" prefHeight="700.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
@@ -37,14 +37,15 @@
                                  <children>
                                     <TableView fx:id="orderTable" layoutX="10.0" layoutY="10.0" prefHeight="611.0" prefWidth="1010.0" stylesheets="@../css_files/style.css" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                       <columns>
-                                        <TableColumn minWidth="60.0" prefWidth="70.0" style="fx-background-radius: 0;" text="No" />
-                                          <TableColumn prefWidth="115.0" text="Xidmət növü" />
-                                        <TableColumn prefWidth="112.625" text="Ad" />
-                                          <TableColumn prefWidth="103.0" text="Soyad" />
-                                          <TableColumn minWidth="0.0" prefWidth="115.0" text="Əlaqə nömrəsi" />
-                                          <TableColumn minWidth="0.0" prefWidth="233.0" text="Ünvan" />
-                                          <TableColumn minWidth="0.0" prefWidth="115.0" text="Status" />
-                                          <TableColumn minWidth="0.0" prefWidth="115.0" text="Məbləğ" />
+                                        <TableColumn fx:id="columnId" minWidth="60.0" prefWidth="70.0" style="fx-background-radius: 0;" text="No" />
+                                          <TableColumn fx:id="columnService" prefWidth="115.0" text="Xidmət növü" />
+                                        <TableColumn fx:id="columnFirstname" prefWidth="112.625" text="Ad" />
+                                          <TableColumn fx:id="columnLastname" prefWidth="103.0" text="Soyad" />
+                                          <TableColumn fx:id="columnTelephone" minWidth="0.0" prefWidth="115.0" text="Əlaqə nömrəsi" />
+                                          <TableColumn fx:id="columnAddress" minWidth="0.0" prefWidth="233.0" text="Ünvan" />
+                                          <TableColumn fx:id="columnStatus" minWidth="0.0" prefWidth="115.0" text="Status" />
+                                          <TableColumn fx:id="columnOrderTime" minWidth="0.0" prefWidth="115.0" text="Sifariş vaxtı" />
+                                          <TableColumn fx:id="columnPrice" minWidth="0.0" prefWidth="115.0" text="Məbləğ" />
                                       </columns>
                                        <columnResizePolicy>
                                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -92,7 +93,7 @@
                            </VBox.margin>
                            <children>
                               <TextField fx:id="searchField" maxWidth="180.0" minWidth="100.0" prefHeight="30.0" prefWidth="150.0" promptText="Sifariş No" style="-fx-background-radius: 0;" />
-                              <Button fx:id="searchButton" mnemonicParsing="false" prefHeight="30.0" style="-fx-background-radius: 0; -fx-background-color: #6E5DFF; -fx-cursor: hand;">
+                              <Button fx:id="searchButton" onAction="#handleSearchButtonClicked" mnemonicParsing="false" prefHeight="30.0" style="-fx-background-radius: 0; -fx-background-color: #6E5DFF; -fx-cursor: hand;">
                                  <HBox.margin>
                                     <Insets left="10.0" />
                                  </HBox.margin>
@@ -137,12 +138,12 @@
                               <Insets top="15.0" />
                            </VBox.margin>
                         </ComboBox>
-                        <ComboBox fx:id="StatusComboBox" layoutX="25.0" layoutY="233.0" prefWidth="180.0" promptText="Status" style="-fx-background-radius: 0; -fx-background-color: #E8E7E4;">
+                        <ComboBox fx:id="statusComboBox" layoutX="25.0" layoutY="233.0" prefWidth="180.0" promptText="Status" style="-fx-background-radius: 0; -fx-background-color: #E8E7E4;">
                            <VBox.margin>
                               <Insets top="15.0" />
                            </VBox.margin>
                         </ComboBox>
-                        <ComboBox fx:id="DateComboBox" layoutX="25.0" layoutY="258.0" prefWidth="180.0" promptText="Tarix" style="-fx-background-radius: 0; -fx-background-color: #E8E7E4;">
+                        <ComboBox fx:id="dateComboBox" layoutX="25.0" layoutY="258.0" prefWidth="180.0" promptText="Tarix" style="-fx-background-radius: 0; -fx-background-color: #E8E7E4;">
                            <VBox.margin>
                               <Insets top="15.0" />
                            </VBox.margin>

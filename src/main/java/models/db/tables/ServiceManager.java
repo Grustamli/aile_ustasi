@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceManager {
-    private static Connection conn = ConnectionManager.getInstance().getConnection();
+    private static Connection conn;
 
 
     public static List<Service> getAll(){
+        conn = ConnectionManager.getInstance().getConnection();
         List<Service> services = null;
         String sql = "SELECT * FROM services";
 
@@ -39,6 +40,7 @@ public class ServiceManager {
     }
 
     public static Service getRow(int id) throws SQLException {
+        conn = ConnectionManager.getInstance().getConnection();
         String sql = "SELECT * FROM services WHERE id = ?";
         Service service = null;
         ResultSet rs = null;
@@ -68,6 +70,7 @@ public class ServiceManager {
 
 
     public static boolean insert(Service service) throws SQLException {
+        conn = ConnectionManager.getInstance().getConnection();
         boolean ret = false;
         String sql = "INSERT INTO services(name, hourly_price) VALUES(?,?)";
         ResultSet rs = null;

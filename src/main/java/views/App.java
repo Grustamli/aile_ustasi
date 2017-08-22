@@ -1,6 +1,8 @@
 package views;
 
 import controllers.Controller;
+import controllers.ControllerName;
+import controllers.ControllerStore;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -28,6 +30,7 @@ public class App extends Application {
             AnchorPane pane = (AnchorPane) loader.load();
             Controller controller = loader.getController();
             controller.setAppInstance(this);
+            ControllerStore.getInstance().add(ControllerName.HOME_VIEW, controller);
             Scene scene = new Scene(pane);
             primaryStage.setScene(scene);
             primaryStage.show();
@@ -44,6 +47,7 @@ public class App extends Application {
             Controller controller = loader.getController();
             controller.setAppInstance(this);
             controller.init();
+            ControllerStore.getInstance().add(ControllerName.NEW_ORDER, controller);
             Scene scene = new Scene(pane);
             stage = new Stage();
             stage.setScene(scene);
@@ -64,6 +68,7 @@ public class App extends Application {
             Controller controller = loader.getController();
             controller.setAppInstance(this);
             controller.init();
+            ControllerStore.getInstance().add(ControllerName.LOGIN_VIEW, controller);
             Scene scene = new Scene(pane);
             loginStage = new Stage();
             loginStage.setScene(scene);

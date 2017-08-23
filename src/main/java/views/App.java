@@ -16,6 +16,7 @@ import java.io.IOException;
 public class App extends Application {
     private Stage primaryStage;
     private Stage loginStage;
+    private Stage newOrderStage;
 
     public void start(Stage primaryStage) throws Exception {
         ConnectionManager.getInstance().setDb("localhost", 5432, "aile_ustasi_db");
@@ -41,7 +42,7 @@ public class App extends Application {
 
     public Stage showNewOrderStage(){
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml_files/NewOrderView.fxml"));
-        Stage stage = null;
+
         try{
             AnchorPane pane = (AnchorPane) loader.load();
             Controller controller = loader.getController();
@@ -49,16 +50,16 @@ public class App extends Application {
             controller.init();
             ControllerStore.getInstance().add(ControllerName.NEW_ORDER, controller);
             Scene scene = new Scene(pane);
-            stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle("YENİ SİFARİŞ");
-            stage.initOwner(primaryStage);
-            stage.setResizable(false);
-            stage.showAndWait();
+            newOrderStage = new Stage();
+            newOrderStage.setScene(scene);
+            newOrderStage.setTitle("YENİ SİFARİŞ");
+            newOrderStage.initOwner(primaryStage);
+            newOrderStage.setResizable(false);
+            newOrderStage.showAndWait();
         }catch (IOException e){
             e.printStackTrace();
         }
-        return stage;
+        return newOrderStage;
     }
 
     public void showLoginStage(){
@@ -84,6 +85,11 @@ public class App extends Application {
     public void closeLoginStage(){
         loginStage.close();
     }
+
+    public void closeNewOrderStage(){
+        newOrderStage.close();
+    }
+
 
 
     public void showAlert(Alert.AlertType alertType, String message){

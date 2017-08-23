@@ -104,4 +104,20 @@ public class Order {
     public void setNote(String note) {
         this.note = note;
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("id: " + String.valueOf(getId()) + "\n");
+        sb.append("firstname: " + String.valueOf(getFirstname()) + "\n");
+        sb.append("lastname: " + String.valueOf(getLastname()) + "\n");
+        sb.append("contact_no: " + String.valueOf(getContactNo()) + "\n");
+        sb.append("address: " + String.valueOf(getAddress()) + "\n");
+        sb.append("service_id: " + String.valueOf(getServiceId()) + "\n");
+        sb.append("price: " + String.valueOf(getPrice()) + "\n");
+        sb.append("operator_id: " + String.valueOf(getOperatorId()) + "\n");
+        sb.append("order_time: " + String.valueOf(getOrderTime()) + "\n");
+        sb.append("status: " + String.valueOf(getStatus()) + "\n");
+        sb.append("note: " + String.valueOf(getNote()) + "\n");
+        return sb.toString();
+    }
 }

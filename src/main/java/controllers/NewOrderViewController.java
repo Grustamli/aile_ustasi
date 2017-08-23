@@ -76,6 +76,7 @@ public class NewOrderViewController extends Controller{
         try {
             OrderManager.insert(order);
             ControllerStore.getInstance().get(ControllerName.HOME_VIEW).update();
+            appInstance.closeNewOrderStage();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             System.out.println(e.getErrorCode());
@@ -84,7 +85,7 @@ public class NewOrderViewController extends Controller{
 
     @FXML
     private void handleCancelButtonClicked(){
-
+        appInstance.closeNewOrderStage();
     }
 
     private void loadServiceChoiceBox(){

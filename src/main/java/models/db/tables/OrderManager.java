@@ -134,29 +134,34 @@ public class OrderManager {
     public static boolean update(Order bean) throws SQLException{
         conn = ConnectionManager.getInstance().getConnection();
         boolean updated = false;
-        String sql = "SELECT * FROM orders WHERE id = ?";
+        String sql = "UPDATE orders SET (firstname, lastname, address, contact_no, status, service_id, price, note) " +
+                "= (?,?,?,?,?::order_status,?,?,?) WHERE id = ?";
         ResultSet rs = null;
         try(
-                PreparedStatement stmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                PreparedStatement stmt = conn.prepareStatement(sql);
                 ){
-            stmt.setInt(1, bean.getId());
-            rs = stmt.executeQuery();
-            if(rs.next()){
-                rs.updateInt("id", bean.getId());
-                rs.updateString("firstname", bean.getFirstname());
-                rs.updateString("lastname", bean.getLastname());
-                rs.updateString("address", bean.getAddress());
-                rs.updateString("contact_no", bean.getContactNo());
-                rs.updateString("status", bean.getStatus());
-                rs.updateInt("service_id", bean.getServiceId());
-                rs.updateDouble("price", bean.getPrice());
-                rs.updateString("note", bean.getNote());
-                rs.updateRow();
+            stmt.setString(1, bean.getFirstname());
+            stmt.setString(2, bean.getLastname());
+            stmt.setString(3, bean.getAddress());
+            stmt.setString(4, bean.getContactNo());
+            stmt.setString(5, bean.getStatus());
+            stmt.setInt(6, bean.getServiceId());
+            if(bean.getPrice() != null){
+                stmt.setDouble(7, bean.getPrice());
+            }
+            else{
+                stmt.setNull(7,Types.FLOAT);
+            }
+            stmt.setString(8, bean.getNote());
+            stmt.setInt(9, bean.getId());
+            int affected = stmt.executeUpdate();
+            if(affected == 1){
                 updated = true;
             }
         }
         catch (SQLException e){
-
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         finally {
             if(rs != null) rs.close();

@@ -23,7 +23,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HomeViewController">
+<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HomeViewController">
    <children>
       <BorderPane layoutX="259.0" layoutY="209.0" prefHeight="700.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
@@ -43,10 +43,10 @@
                                           <TableColumn fx:id="columnLastname" prefWidth="103.0" text="Soyad" />
                                           <TableColumn fx:id="columnTelephone" minWidth="0.0" prefWidth="115.0" text="Əlaqə nömrəsi" />
                                           <TableColumn fx:id="columnAddress" minWidth="0.0" prefWidth="233.0" text="Ünvan" />
-                                          <TableColumn fx:id="columnStatus" minWidth="0.0" prefWidth="115.0" text="Status" />
                                           <TableColumn fx:id="columnOrderTime" minWidth="0.0" prefWidth="115.0" text="Sifariş vaxtı" />
                                           <TableColumn fx:id="columnPrice" minWidth="0.0" prefWidth="115.0" text="Məbləğ" />
                                           <TableColumn fx:id="columnOperator" minWidth="0.0" prefWidth="115.0" text="Operator" />
+                                          <TableColumn fx:id="columnStatus" minWidth="0.0" prefWidth="115.0" text="Status" />
                                       </columns>
                                        <columnResizePolicy>
                                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

@@ -3,6 +3,7 @@ package models.db.utils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class ConnectionManager {
     private String username;
@@ -35,7 +36,13 @@ public class ConnectionManager {
 
     private boolean openConnection(){
         try {
-            conn = DriverManager.getConnection(dbUrl, username, password);
+//            conn = DriverManager.getConnection(dbUrl, username, password);
+            Properties connProperties = new Properties();
+            connProperties.setProperty("user",username);
+            connProperties.setProperty("password",password);
+            connProperties.setProperty("charset","UTF-8");
+            connProperties.setProperty("encoding","UTF-8");
+            conn = DriverManager.getConnection(dbUrl, connProperties);
             return true;
         }
         catch (SQLException e){

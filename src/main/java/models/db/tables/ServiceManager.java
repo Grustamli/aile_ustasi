@@ -69,6 +69,36 @@ public class ServiceManager {
     }
 
 
+    public static Service getRow(String name) throws SQLException {
+        conn = ConnectionManager.getInstance().getConnection();
+        String sql = "SELECT * FROM services WHERE name = ?";
+        Service service = null;
+        ResultSet rs = null;
+        try(
+                PreparedStatement stmt = conn.prepareStatement(sql);
+        ){
+            stmt.setString(1, name);
+            rs = stmt.executeQuery();
+            if(rs.next()){
+                service = new Service();
+                service.setId(rs.getInt("id"));
+                service.setName(rs.getString("name"));
+                service.setHourlyPrice(rs.getDouble("hourly_price"));
+            }
+
+        }
+        catch (SQLException e){
+            System.out.println(e.getMessage());
+            System.out.println(e.getErrorCode());
+            System.out.println();
+        }
+        finally {
+            if(rs != null) rs.close();
+        }
+        return service;
+    }
+
+
     public static boolean insert(Service service) throws SQLException {
         conn = ConnectionManager.getInstance().getConnection();
         boolean ret = false;

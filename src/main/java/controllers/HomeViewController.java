@@ -9,9 +9,11 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
+import javafx.util.converter.DefaultStringConverter;
 import models.db.beans.Order;
 import models.db.beans.Service;
 import models.db.tables.OrderManager;
@@ -35,7 +37,7 @@ public class HomeViewController extends Controller{
     private void initialize(){
         columnId.setMaxWidth(50);
         setDisabledAll(true);
-        setOrderTableEditable();
+
 
     }
 
@@ -158,6 +160,7 @@ public class HomeViewController extends Controller{
             refreshOrders();
         }
         loadFilterComboboxes();
+        setOrderTableEditable();
         setDisabledAll(false);
 
 
@@ -302,17 +305,23 @@ public class HomeViewController extends Controller{
     }
 
     private void setServiceColumnEditable(){
-        columnService.setCellFactory(ComboBoxTableCell.forTableColumn());
-        columnService.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
-            @Override
-            public void handle(TableColumn.CellEditEvent<Order, String> event) {
-                System.out.println(event.getSource());
-            }
-        });
+        ObservableList<String> items = FXCollections.observableArrayList();
+        for(Service service : ServiceManager.getAll()){
+            items.add(service.getName());
+        }
+        columnService.setCellFactory(ChoiceBoxTableCell.forTableColumn(items));
         columnService.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Order, String> event) {
-
+                System.out.println(event.getNewValue());
+                Order order = event.getTableView().getItems().get(event.getTablePosition().getRow());
+                try {
+                    int serviceId = ServiceManager.getRow(event.getNewValue()).getId();
+                    order.setServiceId(serviceId);
+                    OrderManager.update(order);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -320,10 +329,37 @@ public class HomeViewController extends Controller{
 
     private void setContactNoColumnEditable(){
         columnTelephone.setCellFactory(TextFieldTableCell.forTableColumn());
+        columnTelephone.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> event) {
+                Order order = (Order) event.getTableView().getItems().get(event.getTablePosition().getRow());
+                order.setContactNo(event.getNewValue());
+                try {
+                    OrderManager.update(order);
+                } catch (SQLException e) {
+                    System.out.println("Could not update contact no on db");
+                }
+
+            }
+        });
     }
 
     private void setAddressColumnEditable(){
         columnAddress.setCellFactory(TextFieldTableCell.forTableColumn());
+        columnAddress.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> event) {
+                Order order = (Order) event.getTableView().getItems().get(event.getTablePosition().getRow());
+                order.setAddress(event.getNewValue());
+                System.out.println(order.toString());
+                try {
+                    OrderManager.update(order);
+                } catch (SQLException e) {
+                    System.out.println("Could not update address on db");
+                }
+
+            }
+        });
     }
 
     private void setStatusColumnEditable(){

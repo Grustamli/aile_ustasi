@@ -1,5 +1,6 @@
 package models.db.utils;
 
+import javax.swing.table.TableColumn;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -85,6 +86,8 @@ public class ConnectionManager {
     private void setConnectionStatus(ConnectionStatus status){
         this.status = status;
     }
+
+
 
     public ConnectionStatus getStatus() {
         return status;

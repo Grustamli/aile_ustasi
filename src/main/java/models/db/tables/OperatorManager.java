@@ -21,7 +21,7 @@ public class OperatorManager {
                 ){
             while (rs.next()){
                 Operator operator = new Operator();
-                operator.setId(rs.getInt("id"));
+                operator.setId(rs.getInt("user_id"));
                 operator.setUsername(rs.getString("username"));
                 operator.setFirstname(rs.getString("firstname"));
                 operator.setLastname(rs.getString("lastname"));
@@ -39,7 +39,9 @@ public class OperatorManager {
 
     public static Operator getRow(int id) throws SQLException {
         conn = ConnectionManager.getInstance().getConnection();
-        String sql = "SELECT * FROM operators WHERE id = ?";
+        String sql = "SELECT * FROM operators JOIN users\n" +
+                "ON operators.user_id = users.id\n" +
+                "WHERE user_id = ?";
         Operator operator = null;
         ResultSet rs = null;
         try(
@@ -51,7 +53,7 @@ public class OperatorManager {
             if(rs.next()){
                 operator = new Operator();
                 operator.setUsername(rs.getString("username"));
-                operator.setId(rs.getInt("id"));
+                operator.setId(rs.getInt("user_id"));
                 operator.setFirstname(rs.getString("firstname"));
                 operator.setLastname(rs.getString("lastname"));
                 operator.setContactNo(rs.getString("contact_no"));
@@ -85,7 +87,7 @@ public class OperatorManager {
             if(rs.next()){
                 operator = new Operator();
                 operator.setUsername(rs.getString("username"));
-                operator.setId(rs.getInt("id"));
+                operator.setId(rs.getInt("user_id"));
                 operator.setFirstname(rs.getString("firstname"));
                 operator.setLastname(rs.getString("lastname"));
                 operator.setContactNo(rs.getString("contact_no"));
@@ -125,7 +127,7 @@ public class OperatorManager {
             if(affected == 1){
                 keys = stmt.getGeneratedKeys();
                 keys.next();
-                bean.setId(keys.getInt("id"));
+                bean.setId(keys.getInt("user_id"));
                 ret = true;
             }
 

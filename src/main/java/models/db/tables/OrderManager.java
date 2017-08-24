@@ -18,7 +18,7 @@ public class OrderManager {
     public static List<Order> getAll(){
         conn = ConnectionManager.getInstance().getConnection();
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM orders";
+        String sql = "SELECT * FROM orders ORDER BY id ASC";
         try(
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
@@ -135,7 +135,7 @@ public class OrderManager {
         conn = ConnectionManager.getInstance().getConnection();
         boolean updated = false;
         String sql = "UPDATE orders SET (firstname, lastname, address, contact_no, status, service_id, price, note) " +
-                "= (?,?,?,?,?::order_status,?,?,?) WHERE id = ?";
+                "= (?,?,?,?,?::order_status,?,?,?) WHERE id = ? ";
         ResultSet rs = null;
         try(
                 PreparedStatement stmt = conn.prepareStatement(sql);
@@ -168,6 +168,8 @@ public class OrderManager {
         }
         return  updated;
     }
+
+
 
     public static List<Order> filter(String filter) throws SQLException {
         conn = ConnectionManager.getInstance().getConnection();

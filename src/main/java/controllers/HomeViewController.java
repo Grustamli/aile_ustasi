@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -10,12 +11,12 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ChoiceBoxTableCell;
-import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
-import javafx.util.converter.DefaultStringConverter;
+import models.db.beans.Operator;
 import models.db.beans.Order;
 import models.db.beans.Service;
+import models.db.tables.OperatorManager;
 import models.db.tables.OrderManager;
 import models.db.tables.ServiceManager;
 import models.db.utils.ConnectionManager;
@@ -29,14 +30,16 @@ public class HomeViewController extends Controller{
     private ObservableList<Order> items = null;
     private final String OPERATOR_FILTER_1 = "Hamısı";
     private final String OPERATOR_FİLTER_2 = "Özüm";
-    private final String STATUS_FILTER_1 = "fəaldır";
-    private final String STATUS_FILTER_2 = "tamamlandı";
-    private final String STATUS_FILTER_3 = "ləğv olundu";
+    private final String STATUS_FILTER_1 = "FƏALDIR";
+    private final String STATUS_FILTER_2 = "TAMAMLANDI";
+    private final String STATUS_FILTER_3 = "LƏĞV OLUNDU";
 
     @FXML
     private void initialize(){
         columnId.setMaxWidth(50);
+        styleTable();
         setDisabledAll(true);
+
 
 
     }
@@ -156,12 +159,14 @@ public class HomeViewController extends Controller{
     public void update() {
         if(items == null){
             loadOrderTable();
+            setContextMenuOnTableRow();
         }else{
             refreshOrders();
         }
         loadFilterComboboxes();
         setOrderTableEditable();
         setDisabledAll(false);
+        styleTable();
 
 
 
@@ -169,7 +174,9 @@ public class HomeViewController extends Controller{
 
 
     private void loadOrderTable(){
-
+        for(Order order : OrderManager.getAll()){
+            System.out.println(order.toString());
+        }
         if(items == null) items = FXCollections.observableArrayList(OrderManager.getAll());
         columnId.setCellValueFactory(e -> new SimpleIntegerProperty(e.getValue().getId()).asObject());
         columnService.setCellValueFactory(e -> {
@@ -194,6 +201,17 @@ public class HomeViewController extends Controller{
 
         });
         columnOrderTime.setCellValueFactory(e -> new SimpleObjectProperty<Timestamp>(e.getValue().getOrderTime()));
+        columnOperator.setCellValueFactory(e -> {
+            try {
+                System.out.println(e.getValue().toString());
+                Operator operator = OperatorManager.getRow(e.getValue().getOperatorId());
+                System.out.println(operator.getUsername());
+                return new SimpleStringProperty(OperatorManager.getRow(e.getValue().getOperatorId()).getUsername());
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+                return null;
+            }
+        });
         orderTable.setItems(items);
     }
 
@@ -313,8 +331,9 @@ public class HomeViewController extends Controller{
         columnService.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Order, String> event) {
-                System.out.println(event.getNewValue());
+
                 Order order = event.getTableView().getItems().get(event.getTablePosition().getRow());
+                System.out.println(order.toString());
                 try {
                     int serviceId = ServiceManager.getRow(event.getNewValue()).getId();
                     order.setServiceId(serviceId);
@@ -363,8 +382,126 @@ public class HomeViewController extends Controller{
     }
 
     private void setStatusColumnEditable(){
-        columnStatus.setCellFactory(ComboBoxTableCell.forTableColumn());
+
+//        columnStatus.setCellFactory(ChoiceBoxTableCell.forTableColumn(FXCollections.observableArrayList(STATUS_FILTER_1,STATUS_FILTER_2,STATUS_FILTER_3)));
+        columnStatus.setCellFactory(col -> {
+                ChoiceBoxTableCell<Order,String> choiceBoxTableCell = new ChoiceBoxTableCell();
+                choiceBoxTableCell.getItems().addAll(STATUS_FILTER_1,STATUS_FILTER_2,STATUS_FILTER_3);
+                return choiceBoxTableCell;
+            }
+
+        );
+        columnStatus.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, String> event) {
+                Order order = event.getTableView().getItems().get(event.getTablePosition().getRow());
+                order.setStatus(event.getNewValue());
+                try {
+                    OrderManager.update(order);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
+
+
+    private void styleTable(){
+        for(TableColumn column : orderTable.getColumns()){
+            column.setStyle("-fx-alignment: CENTER");
+        }
+    }
+
+    private void setStatusColumnColored(){
+        System.out.println("coloring started");
+//        columnStatus.setCellFactory(new Callback<TableColumn<Order, String>, TableCell<Order, String>>() {
+//            @Override
+//            public TableCell<Order, String> call(TableColumn<Order, String> param) {
+//                System.out.println("in call method");
+//                TableCell cell = new TableCell(){
+//                    @Override
+//                    public void updateItem(String item, boolean empty) {
+//                        super.updateItem(item, empty);
+//                        setText(empty ? null : item);
+//                        setStyle("-fx-background-color:" + getColor(item));
+//                        System.out.println(getColor(item));
+//                    }
+//
+//                    private String getColor(String status){
+//                        switch (status){
+//                            case STATUS_FILTER_1:
+//                                return "#FFEB3B";
+//                            case STATUS_FILTER_2:
+//                                return "#76FF03";
+//                            case STATUS_FILTER_3:
+//                                return "#F44336";
+//                            default:
+//                                return "";
+//                        }
+//                    }
+//                };
+//                return cell;
+//            }
+//        });
+
+        columnStatus.setCellFactory(column -> {
+            return new TableCell<Order,String>(){
+                protected void updateItem(String item, boolean empty){
+                    super.updateItem(item,empty);
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        setText(item);
+                        setStyle("-fx-background-color:" + getColor(item));
+                    }
+
+                }
+
+                private String getColor(String status){
+                        switch (status){
+                            case STATUS_FILTER_1:
+                                return "#FFEB3B";
+                            case STATUS_FILTER_2:
+                                return "#76FF03";
+                            case STATUS_FILTER_3:
+                                return "#F44336";
+                            default:
+                                return "";
+                        }
+                }
+            };
+        });
+
+    }
+
+
+    private void setContextMenuOnTableRow(){
+        orderTable.setRowFactory(column -> {
+            TableRow<Order> row = new TableRow<>();
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem removeMenuItem = new MenuItem("Sil");
+            MenuItem editMenuItem = new MenuItem("Redaktə et");
+            MenuItem viewMenuItem = new MenuItem("Göstər");
+            removeMenuItem.setOnAction(e -> {
+                boolean deleted = OrderManager.delete(row.getItem().getId());
+                if(deleted) orderTable.getItems().remove(row.getItem());
+            });
+
+            editMenuItem.setOnAction(e -> {
+
+            });
+
+            contextMenu.getItems().add(removeMenuItem);
+            row.contextMenuProperty().bind(
+                    Bindings.when(row.emptyProperty())
+                            .then((ContextMenu)null)
+                            .otherwise(contextMenu)
+            );
+            return row;
+        });
+    }
+
 
 
     private void setOrderTableEditable(){

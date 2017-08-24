@@ -6,3 +6,7 @@
         -fx-background-insets: 0;
 
 }
+
+.table-row-cell {
+    -fx-cell-size: 35px;
+}

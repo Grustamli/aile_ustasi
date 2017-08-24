@@ -18,7 +18,11 @@ public class OrderManager {
     public static List<Order> getAll(){
         conn = ConnectionManager.getInstance().getConnection();
         List<Order> orders = new ArrayList<>();
-        String sql = "SELECT * FROM orders ORDER BY id ASC";
+        String sql = "SELECT orders.id AS id, firstname, lastname, contact_no, address, note, status, price, service_id, order_time, operator_id, services.name AS service_name, username  \n" +
+                "FROM orders \n" +
+                "JOIN services ON orders.service_id = services.id \n" +
+                "JOIN users ON orders.operator_id = users.id;\n" +
+                "\n ORDER BY id ASC";
         try(
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql);
@@ -36,6 +40,8 @@ public class OrderManager {
                 order.setOrderTime(rs.getTimestamp("order_time"));
                 order.setStatus(rs.getString("status"));
                 order.setNote(rs.getString("note"));
+                order.setServiceName(rs.getString("service_name"));
+                order.se
                 orders.add(order);
             }
         }
@@ -82,7 +88,11 @@ public class OrderManager {
 
     public static Order getRow(int id) throws SQLException {
         conn = ConnectionManager.getInstance().getConnection();
-        String sql = "SELECT * FROM orders WHERE id = ?";
+        String sql = "SELECT orders.id AS id, firstname, lastname, contact_no, address, note, status, price, service_id, order_time, operator_id, services.name AS service_name, username  \n" +
+                "FROM orders \n" +
+                "JOIN services ON orders.service_id = services.id \n" +
+                "JOIN users ON orders.operator_id = users.id;\n" +
+                "\n WHERE id = ?";
         ResultSet rs = null;
         Order order = null;
         try (
@@ -100,6 +110,7 @@ public class OrderManager {
                 order.setContactNo(rs.getString("contact_no"));
                 order.setOperatorId(rs.getInt("operator_id"));
                 order.setServiceId(rs.getInt("service_id"));
+                order.setServiceName(rs.getString(""));
                 order.setOrderTime(rs.getTimestamp("order_time"));
                 order.setStatus(rs.getString("status"));
                 order.setNote(rs.getString("note"));

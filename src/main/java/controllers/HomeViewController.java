@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.ChoiceBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 import models.db.beans.Operator;
@@ -19,6 +20,7 @@ import models.db.beans.Service;
 import models.db.tables.OperatorManager;
 import models.db.tables.OrderManager;
 import models.db.tables.ServiceManager;
+import models.db.utils.Account;
 import models.db.utils.ConnectionManager;
 
 import java.sql.Connection;
@@ -164,7 +166,6 @@ public class HomeViewController extends Controller{
             refreshOrders();
         }
         loadFilterComboboxes();
-        setOrderTableEditable();
         setDisabledAll(false);
         styleTable();
 
@@ -178,14 +179,16 @@ public class HomeViewController extends Controller{
             System.out.println(order.toString());
         }
         if(items == null) items = FXCollections.observableArrayList(OrderManager.getAll());
-        columnId.setCellValueFactory(e -> new SimpleIntegerProperty(e.getValue().getId()).asObject());
-        columnService.setCellValueFactory(e -> {
-            try {
-                return new SimpleStringProperty(ServiceManager.getRow(e.getValue().getServiceId()).getName());
-            } catch (SQLException e1) {
-                return null;
-            }
-        });
+        columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
+//        columnService.setCellValueFactory(e -> {
+//            try {
+//                return new SimpleStringProperty(ServiceManager.getRow(e.getValue().getServiceId()).getName());
+//            } catch (SQLException e1) {
+//                return null;
+//            }
+//        });
+
+        columnService.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
         columnFirstname.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getFirstname()));
         columnLastname.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getLastname()));
         columnTelephone.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getContactNo()));
@@ -483,16 +486,31 @@ public class HomeViewController extends Controller{
             MenuItem removeMenuItem = new MenuItem("Sil");
             MenuItem editMenuItem = new MenuItem("Redaktə et");
             MenuItem viewMenuItem = new MenuItem("Göstər");
+
+
+            contextMenu.setOnShown(e -> {
+                if(row.getItem() != null && row.getItem().getOperatorId() != Account.getInstance().getUserId()){
+                editMenuItem.setDisable(true);
+                removeMenuItem.setDisable(true);
+            }
+            });
+
             removeMenuItem.setOnAction(e -> {
+                boolean isOwn = row.getItem().getId() == Account.getInstance().getUserId();
                 boolean deleted = OrderManager.delete(row.getItem().getId());
                 if(deleted) orderTable.getItems().remove(row.getItem());
             });
 
             editMenuItem.setOnAction(e -> {
-
+                System.out.println("edit view opened");
+                appInstance.showEditOrderStage();
+                EditOrderViewController controller = (EditOrderViewController) ControllerStore.getInstance().get(ControllerName.EDIT_ORDER);
+                System.out.println(controller);
+                controller.setOrder(row.getItem());
+                controller.update();
             });
 
-            contextMenu.getItems().add(removeMenuItem);
+            contextMenu.getItems().addAll(viewMenuItem, editMenuItem, removeMenuItem);
             row.contextMenuProperty().bind(
                     Bindings.when(row.emptyProperty())
                             .then((ContextMenu)null)

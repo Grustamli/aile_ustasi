@@ -17,6 +17,7 @@ public class App extends Application {
     private Stage primaryStage;
     private Stage loginStage;
     private Stage newOrderStage;
+    private Stage editOrderStage;
 
     public void start(Stage primaryStage) throws Exception {
         ConnectionManager.getInstance().setDb("localhost", 5432, "aile_ustasi_db");
@@ -82,6 +83,29 @@ public class App extends Application {
         }
     }
 
+    public Stage showEditOrderStage(){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml_files/EditOrderView.fxml"));
+
+        try{
+            AnchorPane pane = (AnchorPane) loader.load();
+            Controller controller = loader.getController();
+            controller.setAppInstance(this);
+            controller.init();
+            ControllerStore.getInstance().add(ControllerName.EDIT_ORDER, controller);
+            Scene scene = new Scene(pane);
+            editOrderStage = new Stage();
+            editOrderStage.setScene(scene);
+            editOrderStage.setTitle("Redaktə et");
+            editOrderStage.initOwner(primaryStage);
+            editOrderStage.setResizable(false);
+            editOrderStage.show();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return editOrderStage;
+
+    }
+
     public void closeLoginStage(){
         loginStage.close();
     }
@@ -89,6 +113,11 @@ public class App extends Application {
     public void closeNewOrderStage(){
         newOrderStage.close();
     }
+
+    public void closeEditOrderStage(){
+        editOrderStage.close();
+    }
+
 
 
 

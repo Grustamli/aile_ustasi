@@ -107,7 +107,7 @@ public class NewOrderViewController extends Controller{
                             setGraphic(null);
                         }
                         else {
-                            setText(item.getName() + " - " + item.getHourlyPrice() + "AZN");
+                            setText(item.getName() + " - " + item.getHourlyPrice() + " AZN");
                         }
                     }
                 };

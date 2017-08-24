@@ -1,108 +1,199 @@
 package models.db.beans;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.StringProperty;
+
 import java.sql.Timestamp;
 
 public class Order {
-    private int id;
-    private String firstname;
-    private String lastname;
-    private String address;
-    private String contactNo;
-    private int serviceId;
-    private Double price;
-    private int operatorId;
+    private IntegerProperty id;
+    private StringProperty firstname;
+    private StringProperty lastname;
+    private StringProperty address;
+    private StringProperty contactNo;
+    private IntegerProperty serviceId;
+    private StringProperty serviceName;
+    private DoubleProperty price;
+    private IntegerProperty operatorId;
+    private StringProperty operatorName;
     private Timestamp orderTime;
-    private String status;
-    private String note;
+
+
+
+
+
+
+
+    private StringProperty status;
+    private StringProperty note;
 
     public Order(){};
 
     public int getId() {
-        return id;
+        return id.get();
     }
+
+
+    /*************** Setters ***********************/
 
     public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getFirstname() {
-        return firstname;
+        this.id.set(id);
     }
 
     public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
+        this.firstname.set(firstname);
     }
 
     public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public String getAddress() {
-        return address;
+        this.lastname.set(lastname);
     }
 
     public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getContactNo() {
-        return contactNo;
+        this.address.set(address);
     }
 
     public void setContactNo(String contactNo) {
-        this.contactNo = contactNo;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Timestamp getOrderTime() {
-        return orderTime;
+        this.contactNo.set(contactNo);
     }
 
     public void setOrderTime(Timestamp orderTime) {
         this.orderTime = orderTime;
     }
 
-    public String getStatus() {
-        return status;
+    public void setPrice(Double price) {
+        this.price.set(price);
     }
 
     public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public int getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(int serviceId) {
-        this.serviceId = serviceId;
-    }
-
-    public int getOperatorId() {
-        return operatorId;
+        this.status.set(status);
     }
 
     public void setOperatorId(int operatorId) {
-        this.operatorId = operatorId;
+        this.operatorId.set(operatorId);
     }
 
-    public String getNote() {
-        return note;
+    public void setServiceId(int serviceId) {
+        this.serviceId.set(serviceId);
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName.set(serviceName);
     }
 
     public void setNote(String note) {
-        this.note = note;
+        this.note.set(note);
+    }
+
+    public void setOperatorName(String operatorName) {
+        this.operatorName.set(operatorName);
+    }
+
+
+
+
+
+
+    /*************** Property Getters ***********************/
+
+    public IntegerProperty idProperty() {
+        return id;
+    }
+
+    public StringProperty addressProperty() {
+        return address;
+    }
+
+    public StringProperty lastnameProperty() {
+        return lastname;
+    }
+
+    public StringProperty firstnameProperty() {
+        return firstname;
+    }
+
+    public StringProperty contactNoProperty() {
+        return contactNo;
+    }
+
+    public IntegerProperty serviceIdProperty() {
+        return serviceId;
+    }
+
+    public DoubleProperty priceProperty() {
+        return price;
+    }
+
+    public IntegerProperty operatorIdProperty() {
+        return operatorId;
+    }
+
+    public StringProperty statusProperty() {
+        return status;
+    }
+
+    public StringProperty noteProperty() {
+        return note;
+    }
+
+    public StringProperty serviceNameProperty() {
+        return serviceName;
+    }
+
+    public StringProperty operatorNameProperty() {
+        return operatorName;
+    }
+
+
+
+    /*************** Getters ***********************/
+
+    public String getFirstname() {
+        return firstname.get();
+    }
+
+    public String getLastname() {
+        return lastname.get();
+    }
+
+    public String getAddress() {
+        return address.get();
+    }
+
+    public String getContactNo() {
+        return contactNo.get();
+    }
+
+    public Double getPrice() {
+        return price.get();
+    }
+
+    public Timestamp getOrderTime() {
+        return orderTime;
+    }
+
+    public String getStatus() {
+        return status.get();
+    }
+
+    public int getServiceId() {
+        return serviceId.get();
+    }
+
+    public String getServiceName() {
+        return serviceName.get();
+    }
+
+    public int getOperatorId() {
+        return operatorId.get();
+    }
+
+    public String getNote() {
+        return note.get();
+    }
+
+    public String getOperatorName() {
+        return operatorName.get();
     }
 
     public String toString(){

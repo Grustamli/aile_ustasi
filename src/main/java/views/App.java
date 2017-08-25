@@ -18,6 +18,8 @@ public class App extends Application {
     private Stage loginStage;
     private Stage newOrderStage;
     private Stage editOrderStage;
+    private Stage orderViewStage;
+    private Stage noteViewStage;
 
     public void start(Stage primaryStage) throws Exception {
         ConnectionManager.getInstance().setDb("localhost", 5432, "aile_ustasi_db");
@@ -106,6 +108,48 @@ public class App extends Application {
 
     }
 
+    public Stage showOrderDetailView(){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml_files/OrderDetailView.fxml"));
+
+        try{
+            AnchorPane pane = (AnchorPane) loader.load();
+            Controller controller = loader.getController();
+            controller.setAppInstance(this);
+            ControllerStore.getInstance().add(ControllerName.ORDER_VIEW, controller);
+            Scene scene = new Scene(pane);
+            orderViewStage = new Stage();
+            orderViewStage.setScene(scene);
+            orderViewStage.setTitle("Sifariş");
+            orderViewStage.initOwner(primaryStage);
+            orderViewStage.setResizable(false);
+            orderViewStage.show();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return orderViewStage;
+    }
+
+    public Stage showOrderNoteView(){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml_files/OrderNotesView.fxml"));
+        try{
+            AnchorPane pane = (AnchorPane) loader.load();
+            Controller controller = loader.getController();
+            controller.setAppInstance(this);
+            ControllerStore.getInstance().add(ControllerName.NOTE_VIEW, controller);
+            Scene scene = new Scene(pane);
+            noteViewStage = new Stage();
+            noteViewStage.setScene(scene);
+            noteViewStage.setTitle("Qeydlər");
+            noteViewStage.initOwner(primaryStage);
+            noteViewStage.setResizable(false);
+            noteViewStage.show();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return noteViewStage;
+    }
+
     public void closeLoginStage(){
         loginStage.close();
     }
@@ -118,6 +162,10 @@ public class App extends Application {
         editOrderStage.close();
     }
 
+    public void closeOrderViewStage(){
+        orderViewStage.close();
+    }
+
 
 
 
@@ -126,6 +174,10 @@ public class App extends Application {
         alert.showAndWait();
     }
 
+
+    public Stage getPrimaryStage(){
+        return primaryStage;
+    }
 
 
 

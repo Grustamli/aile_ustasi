@@ -61,6 +61,7 @@ public class EditOrderViewController extends Controller{
     @FXML
     private void handleEditButtonClicked(){
         order.setServiceId(serviceComboBox.getValue().getId());
+        order.setServiceName(serviceComboBox.getValue().getName());
         order.setFirstname(firstnameField.getText());
         order.setLastname(lastNameField.getText());
         order.setContactNo(contactNoField.getText());

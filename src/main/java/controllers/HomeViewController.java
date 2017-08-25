@@ -1,10 +1,6 @@
 package controllers;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -13,11 +9,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.util.Callback;
-import models.db.beans.Operator;
 import models.db.beans.Order;
 import models.db.beans.Service;
-import models.db.tables.OperatorManager;
+import models.db.filtering.Filter;
+import models.db.filtering.FilterManager;
 import models.db.tables.OrderManager;
 import models.db.tables.ServiceManager;
 import models.db.utils.Account;
@@ -26,12 +21,14 @@ import models.db.utils.ConnectionManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class HomeViewController extends Controller{
     private ObservableList<Order> items = null;
-    private final String OPERATOR_FILTER_1 = "Hamısı";
-    private final String OPERATOR_FİLTER_2 = "Özüm";
+    private final String OPERATOR_FİLTER_ME = "Özüm";
+    private final String FILTER_ALL = "Hamısı";
     private final String STATUS_FILTER_1 = "FƏALDIR";
     private final String STATUS_FILTER_2 = "TAMAMLANDI";
     private final String STATUS_FILTER_3 = "LƏĞV OLUNDU";
@@ -111,7 +108,7 @@ public class HomeViewController extends Controller{
     private ComboBox<String> statusComboBox;
 
     @FXML
-    private ComboBox<Service> serviceComboBox;
+    private ComboBox<String> serviceComboBox;
 
     @FXML
     private ComboBox<String> dateComboBox;
@@ -152,6 +149,34 @@ public class HomeViewController extends Controller{
     }
 
 
+    @FXML
+    private void handleFilterClicked() throws SQLException {
+        String operatorChoice = operatorComboBox.getValue();
+        String serviceChoice = serviceComboBox.getValue();
+        String statusChoice = statusComboBox.getValue();
+
+        List<Filter> filters = new ArrayList<>();
+        if(operatorChoice !=null && operatorChoice.equals(OPERATOR_FİLTER_ME)){
+            Filter filter = FilterManager.getFilter(FilterManager.FILTER_BY_OPERATOR);
+            filter.setValue(Account.getInstance().getUserId());
+            filters.add(filter);
+        }
+        if(serviceChoice != null && !serviceChoice.equals(FILTER_ALL)){
+            Filter filter = FilterManager.getFilter(FilterManager.FILTER_BY_SERVICE);
+            int serviceId = ServiceManager.getRow(serviceChoice).getId();
+            filter.setValue(serviceId);
+            filters.add(filter);
+        }
+        if(statusChoice != null && !statusChoice.equals(FILTER_ALL)){
+            Filter filter = FilterManager.getFilter(FilterManager.FILTER_BY_STATUS);
+            filter.setValue(statusChoice);
+            filters.add(filter);
+        }
+        System.out.println(FilterManager.combine(filters));
+        items.clear();
+        items.addAll(OrderManager.filter(FilterManager.combine(filters)));
+    }
+
     @Override
     public void init() {
 
@@ -178,43 +203,18 @@ public class HomeViewController extends Controller{
         for(Order order : OrderManager.getAll()){
             System.out.println(order.toString());
         }
+
         if(items == null) items = FXCollections.observableArrayList(OrderManager.getAll());
         columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
-//        columnService.setCellValueFactory(e -> {
-//            try {
-//                return new SimpleStringProperty(ServiceManager.getRow(e.getValue().getServiceId()).getName());
-//            } catch (SQLException e1) {
-//                return null;
-//            }
-//        });
-
-        columnService.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
-        columnFirstname.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getFirstname()));
-        columnLastname.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getLastname()));
-        columnTelephone.setCellValueFactory(e -> new SimpleStringProperty(e.getValue().getContactNo()));
-        columnAddress.setCellValueFactory(e-> new SimpleStringProperty(e.getValue().getAddress()));
-        columnStatus.setCellValueFactory(e-> new SimpleStringProperty(e.getValue().getStatus()));
-        columnPrice.setCellValueFactory(e -> {
-            try{
-               return new SimpleDoubleProperty(e.getValue().getPrice()).asObject();
-            }catch (NullPointerException ex){
-//                ex.printStackTrace();
-                return null;
-            }
-
-        });
-        columnOrderTime.setCellValueFactory(e -> new SimpleObjectProperty<Timestamp>(e.getValue().getOrderTime()));
-        columnOperator.setCellValueFactory(e -> {
-            try {
-                System.out.println(e.getValue().toString());
-                Operator operator = OperatorManager.getRow(e.getValue().getOperatorId());
-                System.out.println(operator.getUsername());
-                return new SimpleStringProperty(OperatorManager.getRow(e.getValue().getOperatorId()).getUsername());
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-                return null;
-            }
-        });
+        columnService.setCellValueFactory(new PropertyValueFactory<>("serviceName"));
+        columnFirstname.setCellValueFactory(new PropertyValueFactory<>("firstname"));
+        columnLastname.setCellValueFactory(new PropertyValueFactory<>("lastname"));
+        columnTelephone.setCellValueFactory(new PropertyValueFactory<>("contactNo"));
+        columnAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
+        columnStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        columnOrderTime.setCellValueFactory(new PropertyValueFactory<>("orderTime"));
+        columnOperator.setCellValueFactory(new PropertyValueFactory<>("operatorName"));
         orderTable.setItems(items);
     }
 
@@ -245,39 +245,20 @@ public class HomeViewController extends Controller{
     }
 
     public void loadOperatorCombobox(){
-        ObservableList<String> items = FXCollections.observableArrayList(OPERATOR_FILTER_1,OPERATOR_FİLTER_2);
+        ObservableList<String> items = FXCollections.observableArrayList(FILTER_ALL, OPERATOR_FİLTER_ME);
         operatorComboBox.setItems(items);
     }
 
     public void loadServiceCombobox(){
-        ObservableList<Service> items = FXCollections.observableArrayList(ServiceManager.getAll());
+
+        ObservableList<String> items = FXCollections.observableArrayList();
+        items.add(FILTER_ALL);
+        for(Service service : ServiceManager.getAll()) items.add(service.getName());
         serviceComboBox.setItems(items);
-
-        Callback<ListView<Service>, ListCell<Service>> cellFactory = new Callback<ListView<Service>, ListCell<Service>>(){
-
-            @Override
-            public ListCell<Service> call(ListView<Service> param) {
-                return new ListCell<Service>(){
-                    protected void updateItem(Service item, boolean empty){
-                        super.updateItem(item, empty);
-                        if(item == null || empty){
-                            setGraphic(null);
-                        }
-                        else {
-                            setText(item.getName());
-                        }
-                    }
-                };
-            }
-        };
-
-
-        serviceComboBox.setButtonCell((ListCell<Service>) cellFactory.call(null));
-        serviceComboBox.setCellFactory(cellFactory);
     }
 
     private void loadStatusCombobox(){
-        statusComboBox.setItems(FXCollections.observableArrayList(STATUS_FILTER_1,STATUS_FILTER_2,STATUS_FILTER_3));
+        statusComboBox.setItems(FXCollections.observableArrayList(FILTER_ALL,STATUS_FILTER_1,STATUS_FILTER_2,STATUS_FILTER_3));
     }
 
 
@@ -410,50 +391,22 @@ public class HomeViewController extends Controller{
 
 
     private void styleTable(){
+//        setStatusColumnColored();
         for(TableColumn column : orderTable.getColumns()){
             column.setStyle("-fx-alignment: CENTER");
         }
+
     }
 
     private void setStatusColumnColored(){
         System.out.println("coloring started");
-//        columnStatus.setCellFactory(new Callback<TableColumn<Order, String>, TableCell<Order, String>>() {
-//            @Override
-//            public TableCell<Order, String> call(TableColumn<Order, String> param) {
-//                System.out.println("in call method");
-//                TableCell cell = new TableCell(){
-//                    @Override
-//                    public void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        setText(empty ? null : item);
-//                        setStyle("-fx-background-color:" + getColor(item));
-//                        System.out.println(getColor(item));
-//                    }
-//
-//                    private String getColor(String status){
-//                        switch (status){
-//                            case STATUS_FILTER_1:
-//                                return "#FFEB3B";
-//                            case STATUS_FILTER_2:
-//                                return "#76FF03";
-//                            case STATUS_FILTER_3:
-//                                return "#F44336";
-//                            default:
-//                                return "";
-//                        }
-//                    }
-//                };
-//                return cell;
-//            }
-//        });
-
         columnStatus.setCellFactory(column -> {
             return new TableCell<Order,String>(){
                 protected void updateItem(String item, boolean empty){
                     super.updateItem(item,empty);
                     if (item == null || empty) {
                         setText(null);
-                        setStyle("");
+//                        setStyle("");
                     } else {
                         setText(item);
                         setStyle("-fx-background-color:" + getColor(item));
@@ -486,6 +439,7 @@ public class HomeViewController extends Controller{
             MenuItem removeMenuItem = new MenuItem("Sil");
             MenuItem editMenuItem = new MenuItem("Redaktə et");
             MenuItem viewMenuItem = new MenuItem("Göstər");
+            MenuItem viewNotes = new MenuItem("Qeydləri göstər");
 
 
             contextMenu.setOnShown(e -> {
@@ -502,15 +456,27 @@ public class HomeViewController extends Controller{
             });
 
             editMenuItem.setOnAction(e -> {
-                System.out.println("edit view opened");
                 appInstance.showEditOrderStage();
                 EditOrderViewController controller = (EditOrderViewController) ControllerStore.getInstance().get(ControllerName.EDIT_ORDER);
-                System.out.println(controller);
                 controller.setOrder(row.getItem());
                 controller.update();
             });
 
-            contextMenu.getItems().addAll(viewMenuItem, editMenuItem, removeMenuItem);
+            viewMenuItem.setOnAction(e -> {
+                appInstance.showOrderDetailView();
+                OrderDetailViewController controller = (OrderDetailViewController) ControllerStore.getInstance().get(ControllerName.ORDER_VIEW);
+                controller.setOrder(row.getItem());
+                controller.init();
+            });
+
+            viewNotes.setOnAction(e -> {
+                appInstance.showOrderNoteView();
+                OrderNotesViewController controller = (OrderNotesViewController) ControllerStore.getInstance().get(ControllerName.NOTE_VIEW);
+                controller.setOrder(row.getItem());
+                controller.update();
+            });
+
+            contextMenu.getItems().addAll(viewMenuItem, editMenuItem, viewNotes);
             row.contextMenuProperty().bind(
                     Bindings.when(row.emptyProperty())
                             .then((ContextMenu)null)
@@ -519,6 +485,8 @@ public class HomeViewController extends Controller{
             return row;
         });
     }
+
+
 
 
 

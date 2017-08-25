@@ -1,32 +1,23 @@
 package models.db.beans;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 import java.sql.Timestamp;
 
 public class Order {
-    private IntegerProperty id;
-    private StringProperty firstname;
-    private StringProperty lastname;
-    private StringProperty address;
-    private StringProperty contactNo;
-    private IntegerProperty serviceId;
-    private StringProperty serviceName;
-    private DoubleProperty price;
-    private IntegerProperty operatorId;
-    private StringProperty operatorName;
-    private Timestamp orderTime;
-
-
-
-
-
-
-
-    private StringProperty status;
-    private StringProperty note;
+    private IntegerProperty id = new SimpleIntegerProperty();
+    private StringProperty firstname = new SimpleStringProperty();
+    private StringProperty lastname = new SimpleStringProperty();
+    private StringProperty address = new SimpleStringProperty();
+    private StringProperty contactNo = new SimpleStringProperty();
+    private IntegerProperty serviceId = new SimpleIntegerProperty();
+    private StringProperty serviceName = new SimpleStringProperty();
+    private DoubleProperty price = new SimpleDoubleProperty();
+    private IntegerProperty operatorId = new SimpleIntegerProperty();
+    private StringProperty operatorName = new SimpleStringProperty();
+    private ObjectProperty<Timestamp> orderTime = new SimpleObjectProperty<>();
+    private StringProperty status = new SimpleStringProperty();
+    private StringProperty note = new SimpleStringProperty();
 
     public Order(){};
 
@@ -58,7 +49,7 @@ public class Order {
     }
 
     public void setOrderTime(Timestamp orderTime) {
-        this.orderTime = orderTime;
+        this.orderTime.set(orderTime);
     }
 
     public void setPrice(Double price) {
@@ -144,6 +135,10 @@ public class Order {
         return operatorName;
     }
 
+    public ObjectProperty<Timestamp> orderTimeProperty(){
+        return orderTime;
+    }
+
 
 
     /*************** Getters ***********************/
@@ -169,7 +164,7 @@ public class Order {
     }
 
     public Timestamp getOrderTime() {
-        return orderTime;
+        return orderTime.get();
     }
 
     public String getStatus() {

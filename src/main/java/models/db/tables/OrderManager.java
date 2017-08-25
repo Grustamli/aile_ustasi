@@ -21,7 +21,7 @@ public class OrderManager {
         String sql = "SELECT orders.id AS id, firstname, lastname, contact_no, address, note, status, price, service_id, order_time, operator_id, services.name AS service_name, username  \n" +
                 "FROM orders \n" +
                 "JOIN services ON orders.service_id = services.id \n" +
-                "JOIN users ON orders.operator_id = users.id;\n" +
+                "JOIN users ON orders.operator_id = users.id \n" +
                 "\n ORDER BY id ASC";
         try(
                 Statement stmt = conn.createStatement();
@@ -41,11 +41,13 @@ public class OrderManager {
                 order.setStatus(rs.getString("status"));
                 order.setNote(rs.getString("note"));
                 order.setServiceName(rs.getString("service_name"));
-                order.se
+                order.setOperatorName(rs.getString("username"));
                 orders.add(order);
             }
         }
         catch (SQLException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
             System.err.println("SQL error");
         }
         return orders;
@@ -67,6 +69,7 @@ public class OrderManager {
             stmt.setInt(5, order.getOperatorId());
             stmt.setInt(6, order.getServiceId());
             stmt.setString(7, order.getNote());
+
 
             int affected = stmt.executeUpdate();
             if(affected == 1){
@@ -91,7 +94,7 @@ public class OrderManager {
         String sql = "SELECT orders.id AS id, firstname, lastname, contact_no, address, note, status, price, service_id, order_time, operator_id, services.name AS service_name, username  \n" +
                 "FROM orders \n" +
                 "JOIN services ON orders.service_id = services.id \n" +
-                "JOIN users ON orders.operator_id = users.id;\n" +
+                "JOIN users ON orders.operator_id = users.id\n" +
                 "\n WHERE id = ?";
         ResultSet rs = null;
         Order order = null;
@@ -110,14 +113,17 @@ public class OrderManager {
                 order.setContactNo(rs.getString("contact_no"));
                 order.setOperatorId(rs.getInt("operator_id"));
                 order.setServiceId(rs.getInt("service_id"));
-                order.setServiceName(rs.getString(""));
+                order.setServiceName(rs.getString("service_name"));
                 order.setOrderTime(rs.getTimestamp("order_time"));
                 order.setStatus(rs.getString("status"));
                 order.setNote(rs.getString("note"));
+                order.setOperatorName(rs.getString("username"));
+
             }
         }
         catch (SQLException e){
-
+            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         finally {
             if(rs != null) rs.close();
@@ -184,7 +190,11 @@ public class OrderManager {
 
     public static List<Order> filter(String filter) throws SQLException {
         conn = ConnectionManager.getInstance().getConnection();
-        String sql = "SELECT * FROM orders WHERE ?";
+        String sql = "SELECT orders.id AS id, firstname, lastname, contact_no, address, note, status, price, service_id, order_time, operator_id, services.name AS service_name, username \n" +
+                "FROM orders \n" +
+                "JOIN services ON orders.service_id = services.id \n" +
+                "JOIN users ON orders.operator_id = users.id \n" +
+                "WHERE ?";
         ResultSet rs = null;
         List<Order> orders = null;
         try(
@@ -207,10 +217,13 @@ public class OrderManager {
                     order.setStatus(rs.getString("status"));
                     order.setOrderTime(rs.getTimestamp("order_time"));
                     order.setNote(rs.getString("note"));
+                    order.setOperatorName(rs.getString("username"));
+                    order.setServiceName(rs.getString("service_name"));
                 }
             }
         }
         catch (SQLException e){
+                    System.out.println(e.getMessage());
         }
         finally {
             if(rs != null){

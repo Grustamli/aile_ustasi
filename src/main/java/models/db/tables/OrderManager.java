@@ -95,7 +95,7 @@ public class OrderManager {
                 "FROM orders \n" +
                 "JOIN services ON orders.service_id = services.id \n" +
                 "JOIN users ON orders.operator_id = users.id\n" +
-                "\n WHERE id = ?";
+                "\n WHERE orders.id = ?";
         ResultSet rs = null;
         Order order = null;
         try (
@@ -194,14 +194,14 @@ public class OrderManager {
                 "FROM orders \n" +
                 "JOIN services ON orders.service_id = services.id \n" +
                 "JOIN users ON orders.operator_id = users.id \n" +
-                "WHERE ?";
+                "WHERE " + filter;
+        System.out.println(filter);
         ResultSet rs = null;
         List<Order> orders = null;
         try(
-                PreparedStatement stmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
                 ){
-            stmt.setString(1, filter);
-            rs = stmt.executeQuery();
+            rs = stmt.executeQuery(sql);
             if(rs.next()){
                 rs.beforeFirst();
                 orders = new ArrayList<>();
@@ -219,6 +219,7 @@ public class OrderManager {
                     order.setNote(rs.getString("note"));
                     order.setOperatorName(rs.getString("username"));
                     order.setServiceName(rs.getString("service_name"));
+                    orders.add(order);
                 }
             }
         }

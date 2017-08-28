@@ -13,8 +13,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -67,14 +65,9 @@
          <top>
             <MenuBar BorderPane.alignment="CENTER">
               <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu mnemonicParsing="false" text="Settings">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem fx:id="menuDbSettings" onAction="#handleDBSettingsClicked" mnemonicParsing="false" text="DBSettings" />
                   </items>
                 </Menu>
               </menus>
@@ -93,19 +86,7 @@
                               <Insets top="30.0" />
                            </VBox.margin>
                            <children>
-                              <TextField fx:id="searchField" maxWidth="180.0" minWidth="100.0" prefHeight="30.0" prefWidth="150.0" promptText="Sifariş No" style="-fx-background-radius: 0;" />
-                              <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearchButtonClicked" prefHeight="30.0" style="-fx-background-radius: 0; -fx-background-color: #6E5DFF; -fx-cursor: hand;">
-                                 <HBox.margin>
-                                    <Insets left="10.0" />
-                                 </HBox.margin>
-                                 <graphic>
-                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../icons/musica-searcher.png" />
-                                       </image>
-                                    </ImageView>
-                                 </graphic>
-                              </Button>
+                              <TextField fx:id="searchField" maxWidth="180.0" minWidth="100.0" onKeyReleased="#handleSearchKeyTyped" prefHeight="30.0" prefWidth="180.0" promptText="Sifariş No" style="-fx-background-radius: 0;" />
                            </children>
                         </HBox>
                         <Button fx:id="newOrderButton" mnemonicParsing="false" onAction="#handleNewOrderClicked" prefHeight="40.0" prefWidth="180.0" style="-fx-background-radius: 0; -fx-background-color: #6E5DFF; -fx-cursor: hand;" text="YENI SİFARİŞ" textFill="WHITE">
@@ -151,12 +132,12 @@
                         </ComboBox>
                         <HBox maxWidth="180.0" minWidth="180.0" prefHeight="35.0" prefWidth="180.0" spacing="10.0">
                            <children>
-                              <Button fx:id="resetButton" mnemonicParsing="false" prefHeight="35.0" prefWidth="85.0" style="-fx-background-radius: 0; -fx-background-color: #6E5DFF; -fx-cursor: hand;" text="Sifirla" textFill="WHITE">
+                              <Button fx:id="resetButton" mnemonicParsing="false" onAction="#handleOnResetClicked" prefHeight="35.0" prefWidth="85.0" style="-fx-background-radius: 0; -fx-background-color: #6E5DFF; -fx-cursor: hand;" text="Sifirla" textFill="WHITE">
                                  <font>
                                     <Font name="Calibri Bold" size="15.0" />
                                  </font>
                               </Button>
-                              <Button fx:id="applyButton" onAction="#handleFilterClicked" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="85.0" style="-fx-background-radius: 0; -fx-background-color: #6E5DFF; -fx-cursor: hand;" text="Tətbiq et" textFill="WHITE">
+                              <Button fx:id="applyButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleFilterClicked" prefHeight="35.0" prefWidth="85.0" style="-fx-background-radius: 0; -fx-background-color: #6E5DFF; -fx-cursor: hand;" text="Tətbiq et" textFill="WHITE">
                                  <font>
                                     <Font name="Calibri Bold" size="15.0" />
                                  </font>

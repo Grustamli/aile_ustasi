@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import models.db.utils.ConnectionManager;
+import models.db.utils.DbSettingsProperties;
 
 import java.io.IOException;
 
@@ -20,9 +21,15 @@ public class App extends Application {
     private Stage editOrderStage;
     private Stage orderViewStage;
     private Stage noteViewStage;
+    private Stage dbSettingsStage;
 
     public void start(Stage primaryStage) throws Exception {
-        ConnectionManager.getInstance().setDb("localhost", 5432, "aile_ustasi_db");
+        String host = DbSettingsProperties.getInstance().getProperty(DbSettingsProperties.HOST);
+        String port = DbSettingsProperties.getInstance().getProperty(DbSettingsProperties.PORT);
+        String database = DbSettingsProperties.getInstance().getProperty(DbSettingsProperties.DB_NAME);
+        if(host != null && port != null && database != null){
+            ConnectionManager.getInstance().setDb(host, port, database);
+        }
         this.primaryStage = primaryStage;
         initHomeView();
 
@@ -150,6 +157,27 @@ public class App extends Application {
         return noteViewStage;
     }
 
+    public Stage showDBSettingsPane(){
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml_files/DatabaseSettingsPane.fxml"));
+        try{
+            AnchorPane pane = (AnchorPane) loader.load();
+            Controller controller = loader.getController();
+            controller.setAppInstance(this);
+            ControllerStore.getInstance().add(ControllerName.DB_SETTINGS_PANE, controller);
+            Scene scene = new Scene(pane);
+            dbSettingsStage = new Stage();
+            dbSettingsStage.setScene(scene);
+            dbSettingsStage.setTitle("DB Settings");
+            dbSettingsStage.initOwner(primaryStage);
+            dbSettingsStage.setResizable(false);
+            dbSettingsStage.showAndWait();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        return noteViewStage;
+    }
+
     public void closeLoginStage(){
         loginStage.close();
     }
@@ -164,6 +192,10 @@ public class App extends Application {
 
     public void closeOrderViewStage(){
         orderViewStage.close();
+    }
+
+    public void closeDBSettingsStage(){
+        dbSettingsStage.close();
     }
 
 

@@ -43,6 +43,25 @@ public class HomeViewController extends Controller{
 
     }
 
+    @Override
+    public void init() {
+
+    }
+
+    @Override
+    public void update() {
+        if(items == null){
+            loadOrderTable();
+            setContextMenuOnTableRow();
+        }else{
+            refreshOrders();
+        }
+        loadFilterComboboxes();
+        setDisabledAll(false);
+        styleTable();
+
+    }
+
     @FXML
     private TableView<Order> orderTable;
 
@@ -76,7 +95,8 @@ public class HomeViewController extends Controller{
     @FXML
     private TableColumn<Order, String> columnOperator;
 
-
+    @FXML
+    private MenuItem menuDBSettings;
 
 
     @FXML
@@ -84,9 +104,6 @@ public class HomeViewController extends Controller{
 
     @FXML
     private Button resetButton;
-
-    @FXML
-    private Button searchButton;
 
     @FXML
     private Button applyButton;
@@ -132,7 +149,7 @@ public class HomeViewController extends Controller{
     }
 
     @FXML
-    private void handleSearchButtonClicked(){
+    private void handleSearchKeyTyped(){
         String idStr = searchField.getText();
         System.out.print(idStr);
         if(idStr.equals("")) refreshOrders();
@@ -169,34 +186,51 @@ public class HomeViewController extends Controller{
         }
         if(statusChoice != null && !statusChoice.equals(FILTER_ALL)){
             Filter filter = FilterManager.getFilter(FilterManager.FILTER_BY_STATUS);
-            filter.setValue(statusChoice);
+            filter.setValue("'" + statusChoice + "'");
             filters.add(filter);
         }
-        System.out.println(FilterManager.combine(filters));
-        items.clear();
-        items.addAll(OrderManager.filter(FilterManager.combine(filters)));
-    }
-
-    @Override
-    public void init() {
-
-    }
-
-    @Override
-    public void update() {
-        if(items == null){
-            loadOrderTable();
-            setContextMenuOnTableRow();
-        }else{
+        if(!filters.isEmpty()){
+            System.out.println(FilterManager.combine(filters));
+            items.clear();
+            items.addAll(OrderManager.filter(FilterManager.combine(filters)));
+        }
+        else {
             refreshOrders();
         }
-        loadFilterComboboxes();
-        setDisabledAll(false);
-        styleTable();
-
-
 
     }
+
+    @FXML
+    private void handleOnResetClicked(){
+        operatorComboBox.setValue(null);
+        serviceComboBox.setValue(null);
+        statusComboBox.setValue(null);
+        refreshOrders();
+    }
+
+
+
+    @FXML
+    private void handleDBSettingsClicked(){
+        appInstance.showDBSettingsPane();
+    }
+
+//    private void recursiveUserTypeCheck(){
+//        if(Account.getInstance().getUserType() == null){
+//            appInstance.showLoginStage();
+//            recursiveUserTypeCheck();
+//
+//        }
+//        else if(Account.getInstance().getUserType().equals(Account.TYPE_OPERATOR)){
+//            appInstance.showAlert(Alert.AlertType.ERROR, "Yalnız admin bu funksiyaya daxil ola bilər");
+//        }
+//        else{
+//            appInstance.showDBSettingsPane();
+//
+//        }
+//    }
+
+
 
 
     private void loadOrderTable(){
@@ -233,7 +267,6 @@ public class HomeViewController extends Controller{
     }
 
     public void setSearchDisabled(boolean disabled){
-        searchButton.setDisable(disabled);
         searchField.setDisable(disabled);
     }
 

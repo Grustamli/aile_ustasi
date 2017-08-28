@@ -1,21 +1,26 @@
 package models.db.utils;
 
 public class Account {
-    private static  Account instance = null;
+    private static Account instance = null;
+    public static final String TYPE_ADMIN = "admin";
+    public static final String TYPE_OPERATOR = "operator";
     private int userId;
     private String username;
-    private String firstname;
-    private String lastname;
+    private String userType;
 
-    private Account(){
-
-    }
-
-    public static Account getInstance(){
-        if(instance == null){
+    public static Account getInstance() {
+        if (instance == null) {
             instance = new Account();
         }
         return instance;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
     public int getUserId() {
@@ -34,19 +39,4 @@ public class Account {
         this.username = username;
     }
 
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
 }

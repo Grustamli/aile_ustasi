@@ -29,8 +29,8 @@ public class ConnectionManager {
         this.password = password;
     }
 
-    public void setDb(String host, int port, String database){
-        dbUrl = String.format("jdbc:postgresql://%s:%d/%s", host, port, database);
+    public void setDb(String host, String port, String database){
+        dbUrl = String.format("jdbc:postgresql://%s:%s/%s", host, port, database);
     }
 
 

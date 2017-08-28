@@ -28,7 +28,7 @@ public class test {
 
         System.out.println(FilterManager.combine(filters));
 
-        ConnectionManager.getInstance().setDb("localhost", 5432, "postgres");
+        ConnectionManager.getInstance().setDb("localhost", "5432", "postgres");
         ConnectionManager.getInstance().setCredentials("snoop", "snoop123");
         Connection conn = ConnectionManager.getInstance().getConnection();
 

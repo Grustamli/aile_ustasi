@@ -6,7 +6,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import models.db.beans.Operator;
+import models.db.beans.User;
 import models.db.tables.OperatorManager;
+import models.db.tables.UserManager;
 import models.db.utils.Account;
 import models.db.utils.ConnectionManager;
 import models.db.utils.ConnectionStatus;
@@ -58,11 +60,11 @@ public class LoginViewController extends Controller{
         }
         else{
             try {
-                Operator operator = OperatorManager.getRow(username);
-                Account.getInstance().setUserId(operator.getId());
-                Account.getInstance().setFirstname(operator.getFirstname());
-                Account.getInstance().setLastname(operator.getLastname());
-                Account.getInstance().setUsername(operator.getUsername());
+                User user = UserManager.getRow(username);
+                Account.getInstance().setUserId(user.getId());
+                Account.getInstance().setUsername(user.getUsername());
+                Account.getInstance().setUserType(user.getUserType());
+                System.out.println(user.getId());
                 appInstance.closeLoginStage();
                 ControllerStore.getInstance().get(ControllerName.HOME_VIEW).update();
             } catch (SQLException e) {

@@ -17,6 +17,11 @@ public class OrderNotesViewController extends Controller{
     }
 
     @FXML
+    private void initialize(){
+        textAreaNote.setEditable(false);
+    }
+
+    @FXML
     private TextArea textAreaNote;
 
     public void setOrder(Order order){

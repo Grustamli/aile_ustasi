@@ -1,8 +1,10 @@
 package models.db.beans;
 
 import javafx.beans.property.*;
+import org.joda.time.DateTime;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class Order {
     private IntegerProperty id = new SimpleIntegerProperty();
@@ -15,7 +17,7 @@ public class Order {
     private DoubleProperty price = new SimpleDoubleProperty();
     private IntegerProperty operatorId = new SimpleIntegerProperty();
     private StringProperty operatorName = new SimpleStringProperty();
-    private ObjectProperty<Timestamp> orderTime = new SimpleObjectProperty<>();
+    private StringProperty orderTime = new SimpleStringProperty();
     private StringProperty status = new SimpleStringProperty();
     private StringProperty note = new SimpleStringProperty();
 
@@ -48,7 +50,7 @@ public class Order {
         this.contactNo.set(contactNo);
     }
 
-    public void setOrderTime(Timestamp orderTime) {
+    public void setOrderTime(String orderTime) {
         this.orderTime.set(orderTime);
     }
 
@@ -135,7 +137,7 @@ public class Order {
         return operatorName;
     }
 
-    public ObjectProperty<Timestamp> orderTimeProperty(){
+    public StringProperty orderTimeProperty(){
         return orderTime;
     }
 
@@ -163,7 +165,7 @@ public class Order {
         return price.get();
     }
 
-    public Timestamp getOrderTime() {
+    public String getOrderTime() {
         return orderTime.get();
     }
 

@@ -10,12 +10,11 @@ import models.db.beans.Service;
 import models.db.tables.OrderManager;
 import models.db.tables.ServiceManager;
 import models.db.utils.Account;
-import models.db.utils.ConnectionManager;
+import models.store.ObservableOrderStore;
 
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Observable;
 
 public class NewOrderViewController extends Controller{
 
@@ -46,6 +45,9 @@ public class NewOrderViewController extends Controller{
     private TextField addressField;
 
     @FXML
+    private TextField priceField;
+
+    @FXML
     private TextArea notesField;
 
     @FXML
@@ -62,25 +64,62 @@ public class NewOrderViewController extends Controller{
         String contactNo = contactNoField.getText();
         String address = addressField.getText();
         String notes = notesField.getText();
-        int serviceId = serviceComboBox.getValue().getId();
+        String priceStr = priceField.getText();
+        Service service = serviceComboBox.getValue();
+        Order order = null;
 
-        Order order = new Order();
-        order.setFirstname(fName);
-        order.setLastname(lName);
-        order.setContactNo(contactNo);
-        order.setAddress(address);
-        order.setNote(notes);
-        order.setServiceId(serviceId);
-        order.setOperatorId(Account.getInstance().getUserId());
-
-        try {
-            OrderManager.insert(order);
-            ControllerStore.getInstance().get(ControllerName.HOME_VIEW).update();
-            appInstance.closeNewOrderStage();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getErrorCode());
+        if(service == null){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Xidməti seçin!");
         }
+        else if(fName.equals("")){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Adı daxil edin!");
+        }
+        else if(lName.equals("")){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Soyadı daxil edin!");
+        }
+        else if(contactNo.equals("")){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Əlaqə nömrəsini daxil edin!");
+        }
+        else if(address.equals("")){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Ünvanı nömrəsini daxil edin!");
+        }
+        else if(priceStr.equals("")){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Məbləği daxil edin!");
+        }
+        try{
+            double price = Double.parseDouble(priceStr);
+            order = new Order();
+            order.setFirstname(fName);
+            order.setLastname(lName);
+            order.setContactNo(contactNo);
+            order.setAddress(address);
+            order.setNote(notes);
+            order.setServiceId(service.getId());
+            order.setPrice(price);
+            order.setOperatorId(Account.getInstance().getUserId());
+            try {
+                OrderManager.insert(order);
+                ObservableOrderStore.getInstance().add(order);
+                appInstance.closeNewOrderStage();
+        } catch (SQLException e) {
+            appInstance.showAlert(Alert.AlertType.ERROR, "Serverdə səhvlik yarandı. Sifariş yerləşdirilə bilmədi.");
+        }
+        }
+        catch (Exception e){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Məbləği doğru daxil edin!");
+        }
+
+
+
+
+//        try {
+//            OrderManager.insert(order);
+//            ControllerStore.getInstance().get(ControllerName.HOME_VIEW).update();
+//            appInstance.closeNewOrderStage();
+//        } catch (SQLException e) {
+//            System.out.println(e.getMessage());
+//            System.out.println(e.getErrorCode());
+//        }
     }
 
     @FXML

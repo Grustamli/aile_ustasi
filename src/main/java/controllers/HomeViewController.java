@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.util.Callback;
 import models.db.beans.Order;
 import models.db.beans.Service;
 import models.db.filtering.Filter;
@@ -17,6 +18,7 @@ import models.db.tables.OrderManager;
 import models.db.tables.ServiceManager;
 import models.db.utils.Account;
 import models.db.utils.ConnectionManager;
+import models.store.ObservableOrderStore;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -38,8 +40,7 @@ public class HomeViewController extends Controller{
         columnId.setMaxWidth(50);
         styleTable();
         setDisabledAll(true);
-
-
+        setUserLabelVisible(false);
 
     }
 
@@ -58,9 +59,14 @@ public class HomeViewController extends Controller{
         }
         loadFilterComboboxes();
         setDisabledAll(false);
+        setOrderTableEditable();
         styleTable();
 
     }
+
+
+    @FXML
+    private Label userLabel;
 
     @FXML
     private TableView<Order> orderTable;
@@ -191,8 +197,8 @@ public class HomeViewController extends Controller{
         }
         if(!filters.isEmpty()){
             System.out.println(FilterManager.combine(filters));
-            items.clear();
-            items.addAll(OrderManager.filter(FilterManager.combine(filters)));
+            ObservableOrderStore.getInstance().clear();
+            ObservableOrderStore.getInstance().addAll(OrderManager.filter(FilterManager.combine(filters)));
         }
         else {
             refreshOrders();
@@ -205,7 +211,8 @@ public class HomeViewController extends Controller{
         operatorComboBox.setValue(null);
         serviceComboBox.setValue(null);
         statusComboBox.setValue(null);
-        refreshOrders();
+        ObservableOrderStore.getInstance().clear();
+        ObservableOrderStore.getInstance().addAll(OrderManager.getAll());
     }
 
 
@@ -238,7 +245,9 @@ public class HomeViewController extends Controller{
             System.out.println(order.toString());
         }
 
-        if(items == null) items = FXCollections.observableArrayList(OrderManager.getAll());
+        ObservableOrderStore.getInstance().addAll(OrderManager.getAll());
+
+
         columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnService.setCellValueFactory(new PropertyValueFactory<>("serviceName"));
         columnFirstname.setCellValueFactory(new PropertyValueFactory<>("firstname"));
@@ -249,7 +258,7 @@ public class HomeViewController extends Controller{
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         columnOrderTime.setCellValueFactory(new PropertyValueFactory<>("orderTime"));
         columnOperator.setCellValueFactory(new PropertyValueFactory<>("operatorName"));
-        orderTable.setItems(items);
+        orderTable.setItems(ObservableOrderStore.getInstance().getList());
     }
 
     public void refreshOrders(){
@@ -374,6 +383,29 @@ public class HomeViewController extends Controller{
                     OrderManager.update(order);
                 } catch (SQLException e) {
                     System.out.println("Could not update contact no on db");
+                }
+
+            }
+        });
+    }
+
+    private void setPriceColumnEditable(){
+        columnPrice.setCellFactory(new Callback<TableColumn<Order, Double>, TableCell<Order, Double>>() {
+            @Override
+            public TableCell<Order, Double> call(TableColumn<Order, Double> param) {
+                return new TextFieldTableCell<Order, Double>();
+            }
+        });
+        columnPrice.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Order, Double>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Order, Double> event) {
+                Order order = (Order) event.getTableView().getItems().get(event.getTablePosition().getRow());
+                order.setPrice(event.getNewValue());
+                System.out.println(order.toString());
+                try {
+                    OrderManager.update(order);
+                } catch (SQLException e) {
+                    System.out.println("Could not update address on db");
                 }
 
             }
@@ -522,14 +554,45 @@ public class HomeViewController extends Controller{
 
 
 
+    public void setUserLabelVisible(boolean visible){
+        userLabel.setVisible(visible);
+    }
+
+    public void setUserLabelText(String text){
+        userLabel.setText(text);
+    }
+
+
+    public void setLoggedIn(String username, boolean loggedIn){
+        if(loggedIn){
+            setUserLabelText(username);
+            setUserLabelVisible(true);
+            loginButton.setText("Çıxış");
+            loginButton.setOnAction(event -> {
+                setLoggedIn(null,false);
+            });
+        }
+        else {
+            ConnectionManager.getInstance().close();
+            setDisabledAll(true);
+            ObservableOrderStore.getInstance().clear();
+            setUserLabelVisible(false);
+            loginButton.setText("Giriş");
+            loginButton.setOnAction(event -> {
+                handleOnLoginClicked();
+            });
+        }
+
+    }
 
     private void setOrderTableEditable(){
         orderTable.setEditable(true);
-        setFirstnameColumnEditable();
-        setLastnameColumnEditable();
-        setServiceColumnEditable();
-        setContactNoColumnEditable();
-        setAddressColumnEditable();
+//        setFirstnameColumnEditable();
+//        setLastnameColumnEditable();
+//        setServiceColumnEditable();
+//        setContactNoColumnEditable();
+//        setAddressColumnEditable();
+        setPriceColumnEditable();
         setStatusColumnEditable();
     }
 

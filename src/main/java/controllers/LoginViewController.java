@@ -67,6 +67,8 @@ public class LoginViewController extends Controller{
                 System.out.println(user.getId());
                 appInstance.closeLoginStage();
                 ControllerStore.getInstance().get(ControllerName.HOME_VIEW).update();
+                HomeViewController controller = (HomeViewController) ControllerStore.getInstance().get(ControllerName.HOME_VIEW);
+                controller.setLoggedIn(user.getUsername(),true);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

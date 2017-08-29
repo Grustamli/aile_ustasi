@@ -67,7 +67,7 @@
               <menus>
                 <Menu mnemonicParsing="false" text="Settings">
                   <items>
-                    <MenuItem fx:id="menuDbSettings" onAction="#handleDBSettingsClicked" mnemonicParsing="false" text="DBSettings" />
+                    <MenuItem fx:id="menuDbSettings" mnemonicParsing="false" onAction="#handleDBSettingsClicked" text="DBSettings" />
                   </items>
                 </Menu>
               </menus>
@@ -151,19 +151,30 @@
                   </VBox>
                </center>
                <bottom>
-                  <HBox alignment="CENTER_LEFT" prefHeight="63.0" prefWidth="210.0" style="-fx-background-color: #2D2668;" BorderPane.alignment="CENTER">
+                  <HBox alignment="CENTER_LEFT" prefHeight="63.0" prefWidth="210.0" style="-fx-background-color: #2D2668;" BorderPane.alignment="CENTER_LEFT">
                      <children>
+                        <Label fx:id="userLabel" style="-fx-text-fill: white;" text="User">
+                           <graphic>
+                              <MaterialDesignIconView fill="WHITE" glyphName="ACCOUNT" size="20" />
+                           </graphic>
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Label>
                         <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handleOnLoginClicked" prefHeight="25.0" prefWidth="70.0" style="-fx-background-radius: 0; -fx-background-color: white; -fx-cursor: hand;" text="Giriş">
                            <graphic>
                               <MaterialDesignIconView glyphName="LOGIN" size="14" />
                            </graphic>
+                           <HBox.margin>
+                              <Insets left="60.0" />
+                           </HBox.margin>
                         </Button>
                      </children>
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
                      <padding>
-                        <Insets left="15.0" right="15.0" />
+                        <Insets left="15.0" />
                      </padding>
                   </HBox>
                </bottom>

@@ -49,6 +49,9 @@ public class EditOrderViewController extends Controller{
     private TextField addressField;
 
     @FXML
+    private TextField priceField;
+
+    @FXML
     private TextArea notesField;
 
     @FXML
@@ -60,19 +63,57 @@ public class EditOrderViewController extends Controller{
 
     @FXML
     private void handleEditButtonClicked(){
-        order.setServiceId(serviceComboBox.getValue().getId());
-        order.setServiceName(serviceComboBox.getValue().getName());
-        order.setFirstname(firstnameField.getText());
-        order.setLastname(lastNameField.getText());
-        order.setContactNo(contactNoField.getText());
-        order.setAddress(addressField.getText());
-        order.setNote(notesField.getText());
-        try {
-            OrderManager.update(order);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        String fName = firstnameField.getText();
+        String lName = lastNameField.getText();
+        String contactNo = contactNoField.getText();
+        String address = addressField.getText();
+        String notes = notesField.getText();
+        String priceStr = priceField.getText();
+        Service service = serviceComboBox.getValue();
+        if(service == null){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Xidməti seçin!");
         }
-        appInstance.closeEditOrderStage();
+        else if(fName.equals("")){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Adı daxil edin!");
+        }
+        else if(lName.equals("")){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Soyadı daxil edin!");
+        }
+        else if(contactNo.equals("")){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Əlaqə nömrəsini daxil edin!");
+        }
+        else if(address.equals("")){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Ünvanı nömrəsini daxil edin!");
+        }
+        else if(priceStr.equals("")){
+            appInstance.showAlert(Alert.AlertType.ERROR, "Məbləği daxil edin!");
+        }
+        else{
+            try{
+                double price = Double.parseDouble(priceStr);
+                order.setServiceId(serviceComboBox.getValue().getId());
+                order.setServiceName(serviceComboBox.getValue().getName());
+                order.setFirstname(firstnameField.getText());
+                order.setLastname(lastNameField.getText());
+                order.setContactNo(contactNoField.getText());
+                order.setAddress(addressField.getText());
+                order.setNote(notesField.getText());
+                order.setPrice(price);
+
+                try {
+                    OrderManager.update(order);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                appInstance.closeEditOrderStage();
+            }
+            catch (Exception e){
+                appInstance.showAlert(Alert.AlertType.ERROR, "Doğru məbləği daxil edin!");
+            }
+
+        }
+
+
     }
 
     @FXML
@@ -96,6 +137,7 @@ public class EditOrderViewController extends Controller{
         contactNoField.setText(order.getContactNo());
         addressField.setText(order.getAddress());
         notesField.setText(order.getNote());
+        priceField.setText(String.valueOf(order.getPrice()));
     }
 
     private void loadServiceChoiceBox() {

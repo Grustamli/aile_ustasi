@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EditOrderViewController">
+<AnchorPane prefHeight="450.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.EditOrderViewController">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
@@ -31,6 +31,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" percentHeight="4.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -44,12 +45,12 @@
                         <Insets />
                      </GridPane.margin>
                   </TextField>
-                  <TextArea fx:id="notesField" prefHeight="80.0" prefWidth="200.0" style="-fx-background-radius: 0;" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.rowSpan="2" GridPane.vgrow="NEVER">
+                  <TextArea fx:id="notesField" prefHeight="80.0" prefWidth="200.0" style="-fx-background-radius: 0;" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="7" GridPane.rowSpan="2" GridPane.vgrow="NEVER">
                      <GridPane.margin>
                         <Insets top="5.0" />
                      </GridPane.margin>
                   </TextArea>
-                  <Label text="Xidmət növü" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+                  <Label text="Xidmət növü*" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>
@@ -57,7 +58,7 @@
                         <Font name="Calibri Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label text="Ad" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                  <Label text="Ad*" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>
@@ -65,7 +66,7 @@
                         <Font name="Calibri Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label text="Soyad" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+                  <Label text="Soyad*" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>
@@ -73,7 +74,7 @@
                         <Font name="Calibri Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label text="Əlaqə nömrəsi" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                  <Label text="Əlaqə nömrəsi*" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>
@@ -81,7 +82,7 @@
                         <Font name="Calibri Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label text="Ünvan" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
+                  <Label text="Ünvan*" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>
@@ -89,7 +90,7 @@
                         <Font name="Calibri Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label text="Əlavə qeydlər" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                  <Label text="Əlavə qeydlər" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
                      <GridPane.margin>
                         <Insets right="10.0" />
                      </GridPane.margin>
@@ -98,13 +99,27 @@
                      </font>
                   </Label>
                   <ComboBox fx:id="serviceComboBox" prefHeight="30.0" prefWidth="150.0" style="-fx-background-radius: 0;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <TextField fx:id="priceField" layoutX="126.0" layoutY="161.0" maxWidth="80.0" prefHeight="30.0" style="-fx-background-radius: 0;" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                  <Label text="Məbləğ*" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                     <font>
+                        <Font name="Calibri Bold" size="14.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets right="10.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <Label text="AZN" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                     <GridPane.margin>
+                        <Insets left="90.0" />
+                     </GridPane.margin>
+                  </Label>
                </children>
             </GridPane>
          </center>
          <bottom>
             <ButtonBar prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
               <buttons>
-                <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEditButtonClicked" style="-fx-background-radius: 0;" text="Redaktə et" />
+                <Button fx:id="createButton" mnemonicParsing="false" onAction="#handleEditButtonClicked" style="-fx-background-radius: 0;" text="Redaktə et" />
                   <Button fx:id="cancelButton" layoutX="345.0" layoutY="18.0" mnemonicParsing="false" onAction="#handleCancelButtonClicked" style="-fx-background-radius: 0;" text="Ləğv et" />
               </buttons>
                <padding>

@@ -5,8 +5,10 @@ package models.db.tables;
 import models.db.beans.Operator;
 import models.db.beans.Order;
 import models.db.utils.ConnectionManager;
+import org.joda.time.DateTime;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class OrderManager {
     private OrderManager(){}
 
     public static List<Order> getAll(){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy' 'HH:mm");
         conn = ConnectionManager.getInstance().getConnection();
         List<Order> orders = new ArrayList<>();
         String sql = "SELECT orders.id AS id, firstname, lastname, contact_no, address, note, status, price, service_id, order_time, operator_id, services.name AS service_name, username  \n" +
@@ -29,15 +32,17 @@ public class OrderManager {
 
         ){
             while (rs.next()){
+
                 Order order = new Order();
                 order.setId(rs.getInt("id"));
                 order.setFirstname(rs.getString("firstname"));
                 order.setLastname(rs.getString("lastname"));
                 order.setAddress(rs.getString("address"));
                 order.setContactNo(rs.getString("contact_no"));
+                order.setPrice(rs.getDouble("price"));
                 order.setOperatorId(rs.getInt("operator_id"));
                 order.setServiceId(rs.getInt("service_id"));
-                order.setOrderTime(rs.getTimestamp("order_time"));
+                order.setOrderTime(simpleDateFormat.format(rs.getTimestamp("order_time")));
                 order.setStatus(rs.getString("status"));
                 order.setNote(rs.getString("note"));
                 order.setServiceName(rs.getString("service_name"));
@@ -54,10 +59,11 @@ public class OrderManager {
     }
 
     public static boolean insert(Order order) throws SQLException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy' 'HH:mm");
         conn = ConnectionManager.getInstance().getConnection();
         boolean inserted = false;
-        String sql = "INSERT INTO orders(firstname, lastname, contact_no, address, operator_id, service_id, note)" +
-                "VALUES(?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO orders(firstname, lastname, contact_no, address, operator_id, service_id, note, price)" +
+                "VALUES(?,?,?,?,?,?,?,?)";
         ResultSet keys = null;
         try(
                 PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -69,14 +75,25 @@ public class OrderManager {
             stmt.setInt(5, order.getOperatorId());
             stmt.setInt(6, order.getServiceId());
             stmt.setString(7, order.getNote());
+            if(order.getPrice() != null){
+                stmt.setDouble(8, order.getPrice());
+            }
+            else{
+                stmt.setNull(8,Types.FLOAT);
+            }
 
 
             int affected = stmt.executeUpdate();
             if(affected == 1){
                 keys = stmt.getGeneratedKeys();
                 keys.next();
-                int newId = keys.getInt("id");
-                order.setId(newId);
+                order.setId(keys.getInt("id"));
+                order.setOrderTime(simpleDateFormat.format(keys.getTimestamp("order_time")));
+                int serviceId = keys.getInt("service_id");
+                order.setServiceId(serviceId);
+                order.setServiceName(ServiceManager.getRow(serviceId).getName());
+                order.setStatus(keys.getString("status"));
+                order.setOperatorName(OperatorManager.getRow(order.getOperatorId()).getUsername());
                 inserted = true;
             }
         }
@@ -90,6 +107,7 @@ public class OrderManager {
     }
 
     public static Order getRow(int id) throws SQLException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy' 'HH:mm");
         conn = ConnectionManager.getInstance().getConnection();
         String sql = "SELECT orders.id AS id, firstname, lastname, contact_no, address, note, status, price, service_id, order_time, operator_id, services.name AS service_name, username  \n" +
                 "FROM orders \n" +
@@ -114,10 +132,12 @@ public class OrderManager {
                 order.setOperatorId(rs.getInt("operator_id"));
                 order.setServiceId(rs.getInt("service_id"));
                 order.setServiceName(rs.getString("service_name"));
-                order.setOrderTime(rs.getTimestamp("order_time"));
+                order.setOrderTime(simpleDateFormat.format(rs.getTimestamp("order_time")));
                 order.setStatus(rs.getString("status"));
                 order.setNote(rs.getString("note"));
                 order.setOperatorName(rs.getString("username"));
+                order.setPrice(rs.getDouble("price"));
+
 
             }
         }
@@ -170,6 +190,7 @@ public class OrderManager {
                 stmt.setNull(7,Types.FLOAT);
             }
             stmt.setString(8, bean.getNote());
+
             stmt.setInt(9, bean.getId());
             int affected = stmt.executeUpdate();
             if(affected == 1){
@@ -189,6 +210,7 @@ public class OrderManager {
 
 
     public static List<Order> filter(String filter) throws SQLException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy' 'HH:mm");
         conn = ConnectionManager.getInstance().getConnection();
         String sql = "SELECT orders.id AS id, firstname, lastname, contact_no, address, note, status, price, service_id, order_time, operator_id, services.name AS service_name, username \n" +
                 "FROM orders \n" +
@@ -215,10 +237,11 @@ public class OrderManager {
                     order.setOperatorId(rs.getInt("operator_id"));
                     order.setServiceId(rs.getInt("service_id"));
                     order.setStatus(rs.getString("status"));
-                    order.setOrderTime(rs.getTimestamp("order_time"));
+                    order.setOrderTime(simpleDateFormat.format(rs.getTimestamp("order_time")));
                     order.setNote(rs.getString("note"));
                     order.setOperatorName(rs.getString("username"));
                     order.setServiceName(rs.getString("service_name"));
+                    order.setPrice(rs.getDouble("price"));
                     orders.add(order);
                 }
             }
